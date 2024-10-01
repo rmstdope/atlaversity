@@ -25,9 +25,11 @@ class Turn:
                     #warning(f'{m.id} - {self.start_mages[self.teacher].id} / {m.get_skill_level(self.study[j])} - {self.start_mages[self.teacher].get_skill_level(self.study[j])}')
                     self.not_taught.append(j)
             if len(self.taught) < len(self.start_mages) - 1:
-                warning(f'Warning: Only {len(self.taught)} out of {len(self.start_mages) - 1} can be taught in turn {self.num}')
+                warning(f'Warning: Only {len(self.taught)} out of {len(self.start_mages) - 1} can be taught in turn {self.num}.')
                 for n in self.not_taught:
                     warning(f' ->{self.start_mages[n].name} ({self.start_mages[n].id}) cannot be taught {self.study[n]}')
+            if len(self.taught) > 10:
+                warning(f'Warning: More than ten students for {self.start_mages[self.teacher].name} in turn {self.num}.')
         
     def check_study_prerequisites(self):
         for j,m in enumerate(self.start_mages):
@@ -35,39 +37,14 @@ class Turn:
                 if not m.can_study(Skill.string_to_skill(self.study[j])):
                     error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
                     raise ValueError(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
-        
+
     def find_teacher(self):
         for j,m in enumerate(self.start_mages):
             if self.study[j] == 'TEACH':
                 self.teacher = j
 
-    def validate(self):
-        turn_ok = True
-        # # Check that everyone can study what they are supposed to study
-        # teacher = -1
-        # for j,m in enumerate(self.start_mages):
-        #     if self.study[j] == 'TEACH':
-        #         teacher = j
-        #     else:
-        #         if not m.can_study(Skill.string_to_skill(self.study[j])):
-        #             error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
-        #             turn_ok = False
-        # # Find out how many can be taught in this turn
-        # if teacher >= 0:
-        #     taught = 0
-        #     not_taught = []
-        #     for j, m in enumerate(self.start_mages):
-        #         if j != teacher and m.get_skill_level(self.study[j]) < self.start_mages[teacher].get_skill_level(self.study[j]):
-        #             taught += 1
-        #         elif j != teacher:
-        #             not_taught.append(j)
-        #     if taught < len(self.start_mages) - 1:
-        #         warning(f'Warning: Only {taught} out of {len(self.start_mages) - 1} can be taught in this turn')
-        #         for n in not_taught:
-        #             warning(f' ->{self.start_mages[n].name} ({self.start_mages[n].id}) cannot be taught {self.study[n]}')
-        return turn_ok
-
     def run_turn(self):
-         for j,m in enumerate(self.start_mages):
+        pass
+        for j,m in enumerate(self.start_mages):
             if self.study[j] != 'TEACH':
                 self.end_mages[j].train(Skill.string_to_skill(self.study[j]), 60 if m in self.taught else 30)

@@ -71,7 +71,7 @@ class Mage:
         for s in self.skill_levels:
             if s.name == name:
                 return str(s.level) + '(' + str(s.days) + ')'
-        return '0 (0)'
+        return '0(0)'
     
     def has_skill(self, name):
         for s in self.skill_levels:
@@ -98,4 +98,4 @@ class Mage:
             if s.name == skill.name:
                 s.train(days)
         if not trained:
-            self.skill_levels.append(SkillLevel(skill.name, 60))
+            self.skill_levels.append(SkillLevel(skill.name, days))

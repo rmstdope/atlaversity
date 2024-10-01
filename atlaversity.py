@@ -17,11 +17,11 @@ consts = types.SimpleNamespace()
 consts.CMD_LIST_MAGE = 'mage'
 consts.CMD_CAN_STUDY ='can_study'
 consts.CMD_ORDERS ='order'
+consts.CMD_RELOAD = 'reload'
 consts.CMD_QUIT = 'quit'
-commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_QUIT]
+commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_QUIT]
 all_mages = []
 turns = []
-
 start_turn = 10
 
 def read_mages_from_file(faction, turn):
@@ -69,13 +69,18 @@ def find_mage_num_by_id(mage_id) -> int:
             return i
     return -1
 
-read_mages_from_file(20, start_turn)
-read_mages_from_file(34, start_turn)
-read_mages_from_file(47, start_turn)
-read_mages_from_file(62, start_turn)
+def reload():
+    global all_mages
+    global turns
+    all_mages = []
+    turns = []
+    read_mages_from_file(20, start_turn)
+    read_mages_from_file(34, start_turn)
+    read_mages_from_file(47, start_turn)
+    read_mages_from_file(62, start_turn)
+    read_plan_from_file('mages-plan.csv', start_turn)
 
-read_plan_from_file('mages-plan.csv', start_turn)
-
+reload()
 session = PromptSession(history=FileHistory('.atlaversity_history.txt'))
 
 def get_turn(cmds):
@@ -108,7 +113,7 @@ def get_mages(cmds):
 def get_skill(cmds):
     if len(cmds) > 3:
         try:
-            return next(x for x in Skill.all_skills if x.name == cmds[3])
+            return next(x for x in Skill.all_skills if x.name == cmds[3].upper())
         except StopIteration:
             error(f'Error: Unknown skill ({cmds[3]}).')
             return None            
@@ -170,5 +175,7 @@ while data != consts.CMD_QUIT:
                         for t in turn.taught:
                             green(f'{t.id} ', end='')
                         print()
+            case consts.CMD_RELOAD:
+                reload()
     
     # data = consts.CMD_QUIT
