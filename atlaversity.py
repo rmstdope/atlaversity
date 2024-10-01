@@ -44,10 +44,12 @@ def read_plan_from_file(file, turn):
     for i,mage_id in enumerate(strs[0].split(',')):
         if int(mage_id.strip()) != all_mages[i].id:
             raise ValueError('mages in plan file does not match the mage list')
+    for i,comment in enumerate(strs[1].split(',')):
+        all_mages[i].comment = comment
     last_mages = all_mages
-    for i in range(1,len(strs)):
+    for i in range(2,len(strs)):
         if strs[i][0] != '#':
-            p = Turn(last_mages, strs[i], turn + i - 1)
+            p = Turn(last_mages, strs[i], turn + i - 2)
             turns.append(p)
             last_mages = p.end_mages
 
@@ -148,7 +150,7 @@ while data != consts.CMD_QUIT:
         match cmds[0]:
             case consts.CMD_LIST_MAGE:
                 for m1,m2,s in mages:
-                    magenta(m1.long_name)
+                    magenta(f'{m1.long_name} - {m1.comment}')
                     print(m1.get_skill_delta(m2, skill))
             case consts.CMD_CAN_STUDY:
                 for m1,m2,s in mages:
@@ -161,7 +163,7 @@ while data != consts.CMD_QUIT:
                         green(f'STUDY {s}')
                     else:
                         print(f'{m1.name} ({m1.id}) : ', end='')
-                        green(f'TEACH ')
+                        green(f'TEACH ', end='')
                         for t in turn.taught:
                             green(f'{t.id} ', end='')
                         print()

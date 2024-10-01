@@ -7,6 +7,7 @@ class Mage:
         self.name = name
         self.skill_levels = []
         self.long_name = f'{name} ({self.id})'
+        self.comment = ''
 
     def __str__(self):
         s = f'{self.name} ({self.id})\n'
