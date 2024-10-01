@@ -19,8 +19,11 @@ consts.CMD_CAN_STUDY ='can_study'
 consts.CMD_ORDERS ='order'
 consts.CMD_QUIT = 'quit'
 commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_QUIT]
-
 all_mages = []
+turns = []
+
+start_turn = 10
+
 def read_mages_from_file(faction, turn):
     file = 'mages' + str(faction).zfill(2) + str(turn).zfill(2) + '.csv'
     f = open(file, 'r')
@@ -35,7 +38,6 @@ def read_mages_from_file(faction, turn):
                 m.add_skill(s)
         all_mages.append(m)
 
-turns = []
 def read_plan_from_file(file, turn):
     f = open(file, 'r')
     strs = f.read().splitlines()
@@ -47,12 +49,13 @@ def read_plan_from_file(file, turn):
     for i,comment in enumerate(strs[1].split(',')):
         all_mages[i].comment = comment
     last_mages = all_mages
+    turn_num = turn
     for i in range(2,len(strs)):
         if strs[i][0] != '#':
-            p = Turn(last_mages, strs[i], turn + i - 2)
+            p = Turn(last_mages, strs[i], turn_num)
             turns.append(p)
             last_mages = p.end_mages
-
+            turn_num += 1
 
 def find_mage_by_id(mage_id) -> Mage:
     for m in all_mages:
@@ -66,7 +69,6 @@ def find_mage_num_by_id(mage_id) -> int:
             return i
     return -1
 
-start_turn = 9
 read_mages_from_file(20, start_turn)
 read_mages_from_file(34, start_turn)
 read_mages_from_file(47, start_turn)
@@ -74,7 +76,6 @@ read_mages_from_file(62, start_turn)
 
 read_plan_from_file('mages-plan.csv', start_turn)
 
-data = consts.CMD_CAN_STUDY
 session = PromptSession(history=FileHistory('.atlaversity_history.txt'))
 
 def get_turn(cmds):
@@ -138,6 +139,8 @@ def create_nested_completer():
         command_dict[command] = mage_dict
     nested_completer = NestedCompleter.from_nested_dict(command_dict)
     return nested_completer
+
+data = consts.CMD_CAN_STUDY
 
 while data != consts.CMD_QUIT:
     data = session.prompt('Command> ', completer=create_nested_completer())
