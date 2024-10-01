@@ -3,6 +3,7 @@ import types
 from prompt_toolkit import PromptSession
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.completion import NestedCompleter
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit import print_formatted_text as print
 from prompt_toolkit import  HTML
@@ -19,6 +20,7 @@ consts.CMD_LIST_SKILL = 'skill'
 consts.CMD_CAN_STUDY ='can_study'
 consts.CMD_ORDERS ='order'
 consts.CMD_QUIT = 'quit'
+commands = [consts.CMD_LIST_MAGE, consts.CMD_LIST_SKILL, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_QUIT]
 
 all_mages = []
 def read_mages_from_file(faction, turn):
@@ -121,8 +123,24 @@ def print_can_study(m1, m2):
             green(f'{s.name} ', end='')
     print()
 
+skill_dict = {}
+for skill in Skill.all_skills:
+    skill_dict[skill.name] = None
+turn_dict = {}
+for turn in turns:
+    turn_dict[str(turn.num)] = skill_dict
+mage_dict = {}
+for mage in all_mages:
+    mage_dict[str(mage.id)] = turn_dict
+mage_dict['all'] = None
+command_dict = {}
+for command in commands:
+    command_dict[command] = mage_dict
+nested_completer = NestedCompleter.from_nested_dict(command_dict)
+
 while data != consts.CMD_QUIT:
-    data = session.prompt('Command> ', completer=cmd_completer, complete_while_typing=True)
+    # data = session.prompt('Command> ', completer=cmd_completer, complete_while_typing=True)
+    data = session.prompt('Command> ', completer=nested_completer)
     cmds = data.split(' ')
     turn = get_turn(cmds)
     mages = get_mages(cmds)
