@@ -29,18 +29,20 @@ class Mage:
             s += f'{skill}'
         return s
             
-    def get_skill_delta(self, m2):
+    def get_skill_delta(self, m2, skill2):
         s = '    '
         all_skills = list(set(x.name for x in self.skill_levels) | set(x.name for x in m2.skill_levels))
         all_skills.sort()
         for i, skill in enumerate(all_skills):
-            if i % 8 == 0 and i != 0:
-                s += '\n    '
-            elif i != 0:
-                s += ', '
-            s += f'{skill} {self.get_skill_level_and_days(skill)}'
-            if self.get_skill_days(skill) != m2.get_skill_days(skill):
-                s += f'<ansigreen>->{m2.get_skill_level_and_days(skill)}</ansigreen>'
+            if skill2 == None:
+                if i % 8 == 0 and i != 0:
+                    s += '\n    '
+                elif i != 0:
+                    s += ', '
+            if skill2 == None or skill2.name == skill:
+                s += f'{skill} {self.get_skill_level_and_days(skill)}'
+                if self.get_skill_days(skill) != m2.get_skill_days(skill):
+                    s += f'<ansigreen>->{m2.get_skill_level_and_days(skill)}</ansigreen>'
         return HTML(s)
             
     def add_skill(self, s):

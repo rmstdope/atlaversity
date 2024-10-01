@@ -15,11 +15,10 @@ from Turn import Turn
 
 consts = types.SimpleNamespace()
 consts.CMD_LIST_MAGE = 'mage'
-consts.CMD_LIST_SKILL = 'skill'
 consts.CMD_CAN_STUDY ='can_study'
 consts.CMD_ORDERS ='order'
 consts.CMD_QUIT = 'quit'
-commands = [consts.CMD_LIST_MAGE, consts.CMD_LIST_SKILL, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_QUIT]
+commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_QUIT]
 
 all_mages = []
 def read_mages_from_file(faction, turn):
@@ -121,23 +120,25 @@ def print_can_study(m1, m2):
             green(f'{s.name} ', end='')
     print()
 
-skill_dict = {}
-for skill in Skill.all_skills:
-    skill_dict[skill.name] = None
-turn_dict = {}
-for turn in turns:
-    turn_dict[str(turn.num)] = skill_dict
-mage_dict = {}
-for mage in all_mages:
-    mage_dict[str(mage.id)] = turn_dict
-mage_dict['all'] = None
-command_dict = {}
-for command in commands:
-    command_dict[command] = mage_dict
-nested_completer = NestedCompleter.from_nested_dict(command_dict)
+def create_nested_completer():
+    skill_dict = {}
+    for skill in Skill.all_skills:
+        skill_dict[skill.name] = None
+    turn_dict = {}
+    for turn in turns:
+        turn_dict[str(turn.num)] = skill_dict
+    mage_dict = {}
+    for mage in all_mages:
+        mage_dict[str(mage.id)] = turn_dict
+    mage_dict['all'] = None
+    command_dict = {}
+    for command in commands:
+        command_dict[command] = mage_dict
+    nested_completer = NestedCompleter.from_nested_dict(command_dict)
+    return nested_completer
 
 while data != consts.CMD_QUIT:
-    data = session.prompt('Command> ', completer=nested_completer)
+    data = session.prompt('Command> ', completer=create_nested_completer())
     cmds = data.split(' ')
     turn = get_turn(cmds)
     mages = get_mages(cmds)
@@ -148,7 +149,7 @@ while data != consts.CMD_QUIT:
             case consts.CMD_LIST_MAGE:
                 for m1,m2,s in mages:
                     magenta(m1.long_name)
-                    print(m1.get_skill_delta(m2))
+                    print(m1.get_skill_delta(m2, skill))
             case consts.CMD_CAN_STUDY:
                 for m1,m2,s in mages:
                     print(HTML(f'{m1.name} ({m1.id}) can study (before/<ansigreen>after</ansigreen>):'))
@@ -164,13 +165,5 @@ while data != consts.CMD_QUIT:
                         for t in turn.taught:
                             green(f'{t.id} ', end='')
                         print()
-            case consts.CMD_LIST_SKILL:
-                if skill == None:
-                    error('You must provide a valid skill.')
-                else:
-                    for m1,m2,s in mages:
-                        print(f'{m1.name} ({m1.id}) : ', end='')
-                        print(f'{m1.get_skill_level_and_days(skill.name)} -> ', end='')
-                        green(f'{m2.get_skill_level_and_days(skill.name)}')
     
     # data = consts.CMD_QUIT
