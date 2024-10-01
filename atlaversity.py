@@ -2,7 +2,6 @@ import types
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit import prompt
-from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.completion import NestedCompleter
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit import print_formatted_text as print
@@ -76,7 +75,6 @@ read_plan_from_file('mages-plan.csv', start_turn)
 
 data = consts.CMD_CAN_STUDY
 session = PromptSession(history=FileHistory('.atlaversity_history.txt'))
-cmd_completer = WordCompleter([consts.CMD_CAN_STUDY, consts.CMD_LIST_MAGE, consts.CMD_LIST_SKILL, consts.CMD_ORDERS, consts.CMD_QUIT], ignore_case=True)
 
 def get_turn(cmds):
     if len(cmds) > 2:
@@ -139,7 +137,6 @@ for command in commands:
 nested_completer = NestedCompleter.from_nested_dict(command_dict)
 
 while data != consts.CMD_QUIT:
-    # data = session.prompt('Command> ', completer=cmd_completer, complete_while_typing=True)
     data = session.prompt('Command> ', completer=nested_completer)
     cmds = data.split(' ')
     turn = get_turn(cmds)
@@ -150,10 +147,8 @@ while data != consts.CMD_QUIT:
         match cmds[0]:
             case consts.CMD_LIST_MAGE:
                 for m1,m2,s in mages:
-                    green(f'Before:')
-                    print(m1)
-                    green(f'After:')
-                    print(m2)
+                    magenta(m1.long_name)
+                    print(m1.get_skill_delta(m2))
             case consts.CMD_CAN_STUDY:
                 for m1,m2,s in mages:
                     print(HTML(f'{m1.name} ({m1.id}) can study (before/<ansigreen>after</ansigreen>):'))
@@ -175,6 +170,7 @@ while data != consts.CMD_QUIT:
                 else:
                     for m1,m2,s in mages:
                         print(f'{m1.name} ({m1.id}) : ', end='')
-                        green(f'{m1.get_skill_level(skill.name)}({m1.get_skill_days(skill.name)}) -> {m2.get_skill_level(skill.name)}({m2.get_skill_days(skill.name)})')
+                        print(f'{m1.get_skill_level_and_days(skill.name)} -> ', end='')
+                        green(f'{m2.get_skill_level_and_days(skill.name)}')
     
     # data = consts.CMD_QUIT

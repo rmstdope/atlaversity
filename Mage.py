@@ -1,10 +1,12 @@
 from SkillLevel import SkillLevel
+from prompt_toolkit import  HTML
 
 class Mage:
     def __init__(self, id, name):
         self.id = id
         self.name = name
         self.skill_levels = []
+        self.long_name = f'{name} ({self.id})'
 
     def __str__(self):
         s = f'{self.name} ({self.id})\n'
@@ -16,7 +18,31 @@ class Mage:
                 s += ', '
             s += f'{skill}'
         return s
-    
+
+    def get_skill_list(self):
+        s = '    '
+        for i, skill in enumerate(self.skill_levels):
+            if i % 8 == 0 and i != 0:
+                s += '\n    '
+            elif i != 0:
+                s += ', '
+            s += f'{skill}'
+        return s
+            
+    def get_skill_delta(self, m2):
+        s = '    '
+        all_skills = list(set(x.name for x in self.skill_levels) | set(x.name for x in m2.skill_levels))
+        all_skills.sort()
+        for i, skill in enumerate(all_skills):
+            if i % 8 == 0 and i != 0:
+                s += '\n    '
+            elif i != 0:
+                s += ', '
+            s += f'{skill} {self.get_skill_level_and_days(skill)}'
+            if self.get_skill_days(skill) != m2.get_skill_days(skill):
+                s += f'<ansigreen>->{m2.get_skill_level_and_days(skill)}</ansigreen>'
+        return HTML(s)
+            
     def add_skill(self, s):
         self.skill_levels.append(s)
 
@@ -37,6 +63,12 @@ class Mage:
             if s.name == name:
                 return s.days
         return 0
+    
+    def get_skill_level_and_days(self, name):
+        for s in self.skill_levels:
+            if s.name == name:
+                return str(s.level) + '(' + str(s.days) + ')'
+        return '0 (0)'
     
     def has_skill(self, name):
         for s in self.skill_levels:
