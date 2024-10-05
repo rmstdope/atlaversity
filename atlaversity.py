@@ -1,10 +1,9 @@
 import types
 
 from prompt_toolkit import PromptSession
-from prompt_toolkit import prompt
 from prompt_toolkit.completion import NestedCompleter
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit import print_formatted_text as print
+#from prompt_toolkit import print_formatted_text as print
 from prompt_toolkit import  HTML
 from messages import *
 
@@ -12,17 +11,19 @@ from Mage import Mage
 from SkillLevel import SkillLevel
 from Skill import Skill
 from Turn import Turn
+from OrderEditor import OrderEditor
 
 consts = types.SimpleNamespace()
 consts.CMD_LIST_MAGE = 'mage'
 consts.CMD_CAN_STUDY ='can_study'
 consts.CMD_ORDERS ='order'
 consts.CMD_RELOAD = 'reload'
+consts.CMD_EDIT = 'edit'
 consts.CMD_QUIT = 'quit'
-commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_QUIT]
+commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_QUIT]
 all_mages = []
 turns = []
-start_turn = 10
+start_turn = 11
 
 def read_mages_from_file(faction, turn):
     file = 'mages' + str(faction).zfill(2) + str(turn).zfill(2) + '.csv'
@@ -33,7 +34,7 @@ def read_mages_from_file(faction, turn):
         m = Mage(int(d[0]), d[1])
         for skill in strs[1:]:
             d = skill.split(',')
-            if int(d[i + 1]) > 0:
+            if int(d[i + 1]) > 0 and d[0] != 'COMB' and d[0] != 'OBSE':
                 s = SkillLevel(d[0], int(d[i + 1]))
                 m.add_skill(s)
         all_mages.append(m)
@@ -145,10 +146,13 @@ def create_nested_completer():
     nested_completer = NestedCompleter.from_nested_dict(command_dict)
     return nested_completer
 
-data = consts.CMD_CAN_STUDY
+editor = OrderEditor(turns)
+def edit():
+    editor.run()
 
+data = f'{consts.CMD_EDIT} 888 11'
 while data != consts.CMD_QUIT:
-    data = session.prompt('Command> ', completer=create_nested_completer())
+    # data = session.prompt('Command> ', completer=create_nested_completer())
     cmds = data.split(' ')
     turn = get_turn(cmds)
     mages = get_mages(cmds)
@@ -177,5 +181,7 @@ while data != consts.CMD_QUIT:
                         print()
             case consts.CMD_RELOAD:
                 reload()
+            case consts.CMD_EDIT:
+                edit();
     
-    # data = consts.CMD_QUIT
+    data = consts.CMD_QUIT
