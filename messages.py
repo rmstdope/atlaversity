@@ -30,4 +30,5 @@ def warning(msg):
 
 def error(msg):
     red(msg)
+    raise ValueError(msg)
 

@@ -125,7 +125,7 @@ while True:
                     else:
                         print(f'{m1.name} ({m1.id}) : ', end='')
                         green(f'TEACH ', end='')
-                        for t in turn.taught[turn.find_teacher_num_by_mage(m1)]:
+                        for t in turn.taught[turn.get_teacher_num_by_mage(m1)]:
                             green(f'{t.id} ', end='')
                         print()
             case consts.CMD_RELOAD:

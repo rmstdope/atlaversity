@@ -1,5 +1,7 @@
-from SkillLevel import SkillLevel
 from prompt_toolkit import  HTML
+
+from SkillLevel import *
+from Skill import *
 
 class Mage:
     all_mages = []
@@ -111,6 +113,8 @@ class Mage:
         return False
 
     def can_study(self, skill):
+        if isinstance(skill, str):
+            skill = Skill.string_to_skill(skill)
         can = True
         if self.has_skill(skill.name) and self.get_skill_level(skill.name) == 5:
             return False
@@ -130,3 +134,6 @@ class Mage:
                 s.train(days)
         if not trained:
             self.skill_levels.append(SkillLevel(skill.name, days))
+            
+    def can_teach(self, student, skill):
+        return self.get_skill_level(skill) > student.get_skill_level(skill)

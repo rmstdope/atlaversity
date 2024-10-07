@@ -44,7 +44,7 @@ class Turn:
     def check_teaching(self):
         for ti, teacher in enumerate(self.teachers):
             for mi, m in enumerate(self.start_mages):
-                if m not in self.teachers and m.get_skill_level(self.study[mi]) < teacher.get_skill_level(self.study[mi]) and m.id not in self.no_teach[ti]:
+                if m not in self.teachers and teacher.can_teach(m, self.study[mi]) and m.id not in self.no_teach[ti]:
                     self.taught[ti].append(m)
                 elif m not in self.teachers:
                     self.not_taught.append(mi)
@@ -61,11 +61,12 @@ class Turn:
         
     def check_study_prerequisites(self):
         for j,m in enumerate(self.start_mages):
-            if self.study[j] != 'TEACH':
-                if not m.can_study(Skill.string_to_skill(self.study[j])):
-                    error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
-                    raise ValueError(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
+            if not self.is_teaching(j) and not m.can_study(self.study[j]):
+                error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
 
+    def is_teaching(self, index):
+        return self.study[index] == 'TEACH'
+        
     def find_teachers(self):
         for j,m in enumerate(self.start_mages):
             if self.study[j].startswith('TEACH'):
@@ -83,13 +84,6 @@ class Turn:
             if self.study[j] != 'TEACH':
                 self.end_mages[j].train(Skill.string_to_skill(self.study[j]), 60 if self.is_taught(self.start_mages[j]) else 30)
 
-    def is_taught(self, mage):
-        for students in self.taught:
-            for student in students:
-                if student == mage:
-                    return True
-        return False
-
     def get_taught_by_num(self, mage):
         for ti,students in enumerate(self.taught):
             for student in students:
@@ -97,7 +91,10 @@ class Turn:
                     return ti
         return -1
 
-    def find_teacher_num_by_mage(self, mage) -> int:
+    def is_taught(self, mage):
+        return self.get_taught_by_num(mage) >= 0
+
+    def get_teacher_num_by_mage(self, mage) -> int:
         for i,teacher in enumerate(self.teachers):
             if teacher == mage:
                 return i

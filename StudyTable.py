@@ -35,7 +35,7 @@ class StudyTable(DataTable):
                 if t.is_taught(m):
                     skill = Text(f'{skill} (T{t.get_taught_by_num(m)})', style="italic #03AC13")
                 elif skill == 'TEACH':
-                    skill = Text(f'{skill} ({t.find_teacher_num_by_mage(m)})', style="italic #1323AC")
+                    skill = Text(f'{skill} ({t.get_teacher_num_by_mage(m)})', style="italic #1323AC")
                 rows[mi].append(skill)
         self.add_rows(rows)
         self.tooltip = "Select a row to get more details"
