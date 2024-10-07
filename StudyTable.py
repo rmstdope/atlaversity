@@ -3,6 +3,8 @@ from rich.text import Text
 
 from Prompt import Prompt
 
+from Turn import *
+
 class StudyTable(DataTable):
     
     def __init__(self, editor, turns):
@@ -26,14 +28,14 @@ class StudyTable(DataTable):
         self.add_columns(*columns)
         rows = []
         for m in self.turns[0].start_mages:
-            rows.append([f'{m.name} ({m.id})'])
+            rows.append([f'{m.name} ({m.id}) - {m.comment}'])
         for t in self.turns:
             for mi,m in enumerate(t.start_mages):
                 skill = t.study[mi]
-                if m in t.taught:
-                    skill = Text(f'{skill} (T)', style="italic #03AC13")
+                if t.is_taught(m):
+                    skill = Text(f'{skill} (T{t.taught_by_num(m)})', style="italic #03AC13")
                 elif skill == 'TEACH':
-                    skill = Text(f'{skill}', style="italic #1323AC")
+                    skill = Text(f'{skill} ({t.find_teacher_num_by_id(mi)})', style="italic #1323AC")
                 rows[mi].append(skill)
         self.add_rows(rows)
         self.tooltip = "Select a row to get more details"
