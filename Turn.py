@@ -41,18 +41,12 @@ class Turn:
         self.check_teaching()
         self.run_turn()
 
-    def find_teacher_num_by_id(self, mage_id) -> int:
-        for i,teacher_id in enumerate(self.teachers):
-            if teacher_id == mage_id:
-                return i
-        return -1
-
     def check_teaching(self):
         for ti, teacher in enumerate(self.teachers):
             for mi, m in enumerate(self.start_mages):
-                if mi not in self.teachers and m.get_skill_level(self.study[mi]) < self.start_mages[teacher].get_skill_level(self.study[mi]) and m.id not in self.no_teach[ti]:
+                if m not in self.teachers and m.get_skill_level(self.study[mi]) < teacher.get_skill_level(self.study[mi]) and m.id not in self.no_teach[ti]:
                     self.taught[ti].append(m)
-                elif mi not in self.teachers:
+                elif m not in self.teachers:
                     self.not_taught.append(mi)
         # For now, assume at most two teachers
         for m in self.start_mages:
@@ -63,7 +57,7 @@ class Turn:
                     self.taught[1].remove(m)
         for ti, teacher in enumerate(self.teachers):
             if len(self.taught[ti]) > 10:
-                warning(f'Warning: More than ten ({len(self.taught[ti])}) students for {self.start_mages[teacher].name} in turn {self.num}.')
+                warning(f'Warning: More than ten ({len(self.taught[ti])}) students for {teacher.name} in turn {self.num}.')
         
     def check_study_prerequisites(self):
         for j,m in enumerate(self.start_mages):
@@ -75,7 +69,7 @@ class Turn:
     def find_teachers(self):
         for j,m in enumerate(self.start_mages):
             if self.study[j].startswith('TEACH'):
-                self.teachers.append(j)
+                self.teachers.append(m)
                 self.taught.append([])
                 self.no_teach.append([])
                 no_teach = self.study[j].split('-')
@@ -96,9 +90,16 @@ class Turn:
                     return True
         return False
 
-    def taught_by_num(self, mage):
+    def get_taught_by_num(self, mage):
         for ti,students in enumerate(self.taught):
             for student in students:
                 if student == mage:
                     return ti
         return -1
+
+    def find_teacher_num_by_mage(self, mage) -> int:
+        for i,teacher in enumerate(self.teachers):
+            if teacher == mage:
+                return i
+        return -1
+
