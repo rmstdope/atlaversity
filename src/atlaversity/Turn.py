@@ -1,6 +1,6 @@
 from copy import deepcopy
-from messages import ok, warning, error
 
+from messages import ok, warning, error
 from Skill import *
 from Mage import *
 
@@ -34,7 +34,6 @@ class Turn:
         self.end_mages = [deepcopy(m) for m in self.start_mages]
         self.teachers = []
         self.taught = []
-        self.not_taught = []
         self.no_teach = []
         self.find_teachers()
         self.check_study_prerequisites()
@@ -46,8 +45,6 @@ class Turn:
             for mi, m in enumerate(self.start_mages):
                 if m not in self.teachers and teacher.can_teach(m, self.study[mi]) and m.id not in self.no_teach[ti]:
                     self.taught[ti].append(m)
-                elif m not in self.teachers:
-                    self.not_taught.append(mi)
         # For now, assume at most two teachers
         for m in self.start_mages:
             if len(self.taught) > 1 and m in self.taught[0] and m in self.taught[1]:
@@ -64,9 +61,6 @@ class Turn:
             if not self.is_teaching(j) and not m.can_study(self.study[j]):
                 error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
 
-    def is_teaching(self, index):
-        return self.study[index] == 'TEACH'
-        
     def find_teachers(self):
         for j,m in enumerate(self.start_mages):
             if self.study[j].startswith('TEACH'):
@@ -79,11 +73,13 @@ class Turn:
                     self.no_teach[len(self.no_teach) - 1].append(int(t))
 
     def run_turn(self):
-        pass
         for j,m in enumerate(self.start_mages):
             if self.study[j] != 'TEACH':
                 self.end_mages[j].train(Skill.string_to_skill(self.study[j]), 60 if self.is_taught(self.start_mages[j]) else 30)
 
+    def is_teaching(self, index):
+        return self.study[index] == 'TEACH'
+        
     def get_taught_by_num(self, mage):
         for ti,students in enumerate(self.taught):
             for student in students:

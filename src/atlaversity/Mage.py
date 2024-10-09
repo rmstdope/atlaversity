@@ -83,6 +83,8 @@ class Mage:
         self.skill_levels.append(s)
 
     def has_skill_level(self, name, level):
+        if level == 0:
+            return True 
         for s in self.skill_levels:
             if s.name == name and s.level >= level:
                 return True
@@ -112,9 +114,13 @@ class Mage:
                 return True
         return False
 
-    def can_study(self, skill):
+    def ensure_skill_object(self, skill):
         if isinstance(skill, str):
             skill = Skill.string_to_skill(skill)
+        return skill
+            
+    def can_study(self, skill):
+        skill = self.ensure_skill_object(skill)
         can = True
         if self.has_skill(skill.name) and self.get_skill_level(skill.name) == 5:
             return False
@@ -128,12 +134,13 @@ class Mage:
         return can
 
     def train(self, skill, days):
+        skill = self.ensure_skill_object(skill)
         trained = False
         for s in self.skill_levels:
             if s.name == skill.name:
                 s.train(days)
         if not trained:
             self.skill_levels.append(SkillLevel(skill.name, days))
-            
+
     def can_teach(self, student, skill):
         return self.get_skill_level(skill) > student.get_skill_level(skill)

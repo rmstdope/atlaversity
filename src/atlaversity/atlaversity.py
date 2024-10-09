@@ -23,13 +23,16 @@ consts.CMD_QUIT = 'quit'
 commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_QUIT]
 factions = [20, 34, 47, 62, 80]
 start_turn = 12
+editor = None
 
 def reload():
+    global editor
     Turn.all_turns = []
     Mage.all_mages = []
     for faction in factions:
         Mage.read_from_file(faction, start_turn)
     Turn.read_from_file('mages-plan.csv', start_turn)
+    editor = OrderEditor(Turn.all_turns)
 
 reload()
 session = PromptSession(history=FileHistory('.atlaversity_history.txt'))
@@ -96,8 +99,6 @@ def create_nested_completer():
     nested_completer = NestedCompleter.from_nested_dict(command_dict)
     return nested_completer
 
-editor = OrderEditor(Turn.all_turns)
-
 data = f''
 while True:
     data = session.prompt('Command> ', completer=create_nested_completer())
@@ -132,6 +133,7 @@ while True:
                 reload()
             case consts.CMD_EDIT:
                 editor.run()
+                editor = OrderEditor(Turn.all_turns)
             case consts.CMD_QUIT:
                 break
     # break
