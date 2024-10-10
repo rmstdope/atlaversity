@@ -30,7 +30,7 @@ class OrderEditor(App):
         yield Header()
         yield StudyTable(self, self.turns)
         yield MageTable(self, self.turns)
-        yield Prompt(id='prompt')
+        yield Prompt('prompt', self)
         #yield Footer()
 
     def action_toggle_dark(self) -> None:

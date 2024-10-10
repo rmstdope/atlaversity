@@ -31,16 +31,16 @@ class Turn:
         self.study = data.split(',')
         self.start_mages = mages
         self.num = num
+        self.recalculate()
+        self.run_turn()
+
+    def reset(self):
         self.end_mages = [deepcopy(m) for m in self.start_mages]
         self.teachers = []
         self.taught = []
         self.no_teach = []
-        self.find_teachers()
-        self.check_study_prerequisites()
-        self.check_teaching()
-        self.run_turn()
 
-    def check_teaching(self):
+    def setup_teaching(self):
         for ti, teacher in enumerate(self.teachers):
             for mi, m in enumerate(self.start_mages):
                 if m not in self.teachers and teacher.can_teach(m, self.study[mi]) and m.id not in self.no_teach[ti]:
@@ -61,7 +61,7 @@ class Turn:
             if not self.is_teaching(j) and not m.can_study(self.study[j]):
                 error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
 
-    def find_teachers(self):
+    def setup_teachers(self):
         for j,m in enumerate(self.start_mages):
             if self.study[j].startswith('TEACH'):
                 self.teachers.append(m)
@@ -95,4 +95,24 @@ class Turn:
             if teacher == mage:
                 return i
         return -1
+
+    def can_update(self, mage_num, study):
+        ok = True
+        old_study = self.study[mage_num]
+        self.study[mage_num] = study
+        try: self.recalculate()
+        except ValueError: ok = False
+        self.study[mage_num] = old_study
+        self.recalculate()
+        return ok        
+
+    def update(self, mage_num, study):
+        self.study[mage_num] = study
+        self.recalculate()
+        
+    def recalculate(self):
+        self.reset()
+        self.setup_teachers()
+        self.setup_teaching()
+        self.check_study_prerequisites()
 

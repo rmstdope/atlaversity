@@ -1,8 +1,7 @@
 from textual.widgets import DataTable
 from rich.text import Text
 
-from Prompt import Prompt
-
+from Prompt import *
 from Turn import *
 
 class StudyTable(DataTable):
@@ -57,5 +56,24 @@ class StudyTable(DataTable):
                 self.old_column = self.cursor_coordinate.column
 
     def on_data_table_cell_selected(self):
-        widget = self.editor.query_one(f'#prompt', expect_type=Prompt)
+        widget = self.editor.query_one(f'#prompt_input', expect_type=PromptInput)
         widget.focus()
+
+    def can_update(self, value : str) -> bool:
+        return self.turns[self.cursor_column - 1].can_update(self.cursor_row, value)
+
+    def update(self, value : str):
+        turn = self.turns[self.cursor_column - 1]
+        # mage_num = self.cursor_row
+        # mage = turn.start_mages[mage_num]
+        turn.update(self.cursor_row, value)
+        self.focus()
+        for mage_num,mage in enumerate(turn.start_mages):
+            skill = turn.study[mage_num]
+            if turn.is_taught(mage):
+                skill = Text(f'{skill} (T{turn.get_taught_by_num(mage)})', style="italic #03AC13")
+            elif skill == 'TEACH':
+                skill = Text(f'{skill} ({turn.get_teacher_num_by_mage(mage)})', style="italic #1323AC")
+            #r = self.
+            r,c = self.coordinate_to_cell_key((mage_num, self.cursor_column))
+            self.update_cell(r, c, skill)

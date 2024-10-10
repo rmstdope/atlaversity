@@ -58,10 +58,16 @@ def test_can_study_simple_prereq_nok(mage):
     mage.add_skill(SkillLevel('FIRE', LEVEL_3_DAYS))
     assert mage.can_study('FIRE') == False
 
-def test_can_study_advanced_prereq_nok(mage):
+def test_can_study_advanced_prereq_nok1(mage):
     assert mage.can_study('DRAG') == False
     mage.add_skill(SkillLevel('WOLF', LEVEL_3_DAYS - 1))
     mage.add_skill(SkillLevel('BIRD', LEVEL_3_DAYS))
+    assert mage.can_study('DRAG') == False
+
+def test_can_study_advanced_prereq_nok2(mage):
+    assert mage.can_study('DRAG') == False
+    mage.add_skill(SkillLevel('WOLF', LEVEL_3_DAYS))
+    mage.add_skill(SkillLevel('BIRD', LEVEL_3_DAYS - 1))
     assert mage.can_study('DRAG') == False
 
 def test_can_study_advanced_prereq_ok(mage):

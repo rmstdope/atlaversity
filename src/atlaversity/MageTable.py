@@ -10,6 +10,7 @@ class MageTable(DataTable):
     def on_mount(self):
         self.cursor_type = 'cell'
         self.zebra_stripes = True
+        self.fixed_columns = 1
         skill_union = set()
         for m in self.turns[len(self.turns) - 1].end_mages:
             for skill_level in m.skill_levels:
