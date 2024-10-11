@@ -45,6 +45,7 @@ class StudyTable(DataTable):
         else:
             mage_table = self.editor.query_one(f'#mage_table')
             study = self.turns[self.cursor_column - 1].study[self.cursor_row]
+            mage_table.update_highlight(self.cursor_row)
             if study == 'TEACH':
                 mage_table.cursor_type = 'none'
             else:

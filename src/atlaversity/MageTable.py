@@ -50,7 +50,20 @@ class MageTable(DataTable):
         if self.cursor_coordinate.column == 0:
             self.cursor_coordinate = self.cursor_coordinate.right()
 
+    def update_highlight(self, row):
+        if self.is_mounted:
+            for i in range(row - 1,row + 2):
+                if self.is_valid_row_index(i):
+                    mage = self.turns[0].start_mages[i]
+                    r,c = self.coordinate_to_cell_key((i, 0))
+                    if i == row:
+                        self.update_cell(r, c, f'>> {mage.name} ({mage.id}) <<')
+                    else:
+                        self.update_cell(r, c, f'{mage.name} ({mage.id})')
+        
+
     def on_focus(self):
         self.cursor_type = 'column'
+
     def on_blur(self):
         self.cursor_type = 'none'
