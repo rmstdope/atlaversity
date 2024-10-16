@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from messages import ok, warning, error
+from Logging import *
 from Skill import *
 from Mage import *
 
@@ -56,14 +56,14 @@ class Turn:
                     self.taught[1].remove(m)
         for ti, teacher in enumerate(self.teachers):
             if len(self.taught[ti]) > 10:
-                warning(f'Warning: More than ten ({len(self.taught[ti])}) students for {teacher.name} in turn {self.num}.')
+                Logging.warning(f'Warning: More than ten ({len(self.taught[ti])}) students for {teacher.name} in turn {self.num}.')
         
     def check_study_prerequisites(self):
         for j,m in enumerate(self.start_mages):
             if not self.is_teaching(j):
                 (can, reason) = m.can_study(self.study[j])
                 if not can:
-                    error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}: {reason}')
+                    Logging.error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}: {reason}')
 
     def setup_teachers(self):
         for j,m in enumerate(self.start_mages):

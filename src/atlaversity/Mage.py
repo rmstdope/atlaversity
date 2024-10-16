@@ -118,7 +118,7 @@ class Mage:
         if isinstance(skill, str):
             skill = Skill.string_to_skill(skill)
         return skill
-            
+
     def can_study(self, skill):
         skill = self.ensure_skill_object(skill)
         can = True
@@ -145,3 +145,10 @@ class Mage:
 
     def can_teach(self, student, skill):
         return self.get_skill_level(skill) > student.get_skill_level(skill)
+
+    def get_can_study_list(self):
+        ok = []
+        for skill in Skill.all_skills:
+            if self.can_study(skill)[0]:
+                ok.append(skill.name)
+        return ok

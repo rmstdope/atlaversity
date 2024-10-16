@@ -181,11 +181,11 @@ phen.add_dependency(illu, 1)
 Skill.all_skills.append(phen)
 
 phbe = Skill('PHBE')
-phen.add_dependency(illu, 1)
+phbe.add_dependency(illu, 1)
 Skill.all_skills.append(phbe)
 
 phde = Skill('PHDE')
-phbe.add_dependency(illu, 1)
+phde.add_dependency(illu, 1)
 Skill.all_skills.append(phde)
 
 invi = Skill('INVI')

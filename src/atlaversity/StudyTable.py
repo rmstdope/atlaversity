@@ -3,6 +3,7 @@ from rich.text import Text
 
 from Prompt import *
 from Turn import *
+from Logging import *
 
 class StudyTable(DataTable):
     
@@ -65,14 +66,19 @@ class StudyTable(DataTable):
                 self.old_column = self.cursor_coordinate.column
 
     def on_data_table_cell_selected(self):
-        widget = self.editor.query_one(f'#prompt_input', expect_type=PromptInput)
-        widget.focus()
+        mage = self.turns[self.cursor_column - 1].start_mages[self.cursor_row]
+        skills = mage.get_can_study_list()
+        skills.append('TEACH')
+        self.editor.select_value('select_skill', 'Select Skill', skills)
 
     def can_update(self, value : str) -> bool:
         return self.turns[self.cursor_column - 1].can_update(self.cursor_row, value)
 
     def update(self, value : str):
+        if value == 'OK':
+            return
         turn = self.turns[self.cursor_column - 1]
+        Logging.clear_message_list()
         turn.update(self.cursor_row, value)
         self.focus()
         cells = []
@@ -80,4 +86,9 @@ class StudyTable(DataTable):
         for i,cell in enumerate(cells):
             r,c = self.coordinate_to_cell_key((i, self.cursor_column))
             self.update_cell(r, c, cell)
+        if len(Logging.get_message_list()) > 0:
+            s = ''
+            for m in Logging.get_message_list():
+                s = s + m + '\n'
+            self.editor.select_value('ok_box', s, ['OK'])
 

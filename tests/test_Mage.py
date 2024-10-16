@@ -98,3 +98,9 @@ def test_can_teach(mage):
     mage.train('PATT', 1)
     assert mage.can_teach(student, 'PATT') == True
 
+def test_can_study_list_basic(mage):
+    assert mage.get_can_study_list() == ['', 'PATT', 'FORC', 'SPIR']
+
+def test_can_study_list_advanced(mage):
+    mage.train('FORC', LEVEL_1_DAYS)
+    assert mage.get_can_study_list() == ['', 'PATT', 'FORC', 'SPIR', 'FIRE', 'FSHI', 'ESHI']
