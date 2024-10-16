@@ -22,16 +22,21 @@ consts.CMD_EDIT = 'edit'
 consts.CMD_QUIT = 'quit'
 commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_QUIT]
 factions = [20, 34, 47, 62, 80]
-start_turn = 13
+start_turn = 15
 editor = None
 
 def reload():
     global editor
     Turn.all_turns = []
     Mage.all_mages = []
-    for faction in factions:
-        Mage.read_from_file(faction, start_turn)
-    Turn.read_from_file('mages-plan.csv', start_turn)
+    try:
+        for faction in factions:
+            Mage.read_from_file(faction, start_turn)
+        Turn.read_from_file('mages-plan.csv', start_turn)
+    except ValueError as err:
+        Turn.all_turns = []
+        Mage.all_mages = []
+        error(err)
     editor = OrderEditor(Turn.all_turns)
 
 reload()
@@ -76,9 +81,9 @@ def get_skill(cmds):
 def print_can_study(m1, m2):
     print(f'    ', end='')
     for s in Skill.all_skills:
-        if m1.can_study(s):
+        if m1.can_study(s)[0]:
             print(f'{s.name} ', end='')
-        elif m2.can_study(s):
+        elif m2.can_study(s)[0]:
             green(f'{s.name} ', end='')
     print()
 
@@ -100,7 +105,7 @@ def create_nested_completer():
     return nested_completer
 
 data = f''
-while True:
+while len(Turn.all_turns) > 0:
     data = session.prompt('Command> ', completer=create_nested_completer())
     # data = consts.CMD_EDIT
     cmds = data.split(' ')

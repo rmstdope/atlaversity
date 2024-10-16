@@ -16,6 +16,8 @@ class Skill:
             raise ValueError(f'Skill {name} not a valid skill')
         return s
 
+none = Skill('')
+Skill.all_skills.append(none)
 
 patt = Skill('PATT')
 Skill.all_skills.append(patt)
@@ -203,3 +205,102 @@ arti.add_dependency(forc, 1)
 arti.add_dependency(patt, 1)
 arti.add_dependency(spir, 1)
 Skill.all_skills.append(arti)
+
+crri = Skill('CRRI')
+crri.add_dependency(arti, 2)
+crri.add_dependency(invi, 3)
+Skill.all_skills.append(crri)
+
+crcl = Skill('CRCL')
+crcl.add_dependency(arti, 4)
+crcl.add_dependency(fshi, 4)
+Skill.all_skills.append(crcl)
+
+crsf = Skill('CRSF')
+crsf.add_dependency(arti, 2)
+crsf.add_dependency(fire, 3)
+Skill.all_skills.append(crsf)
+
+crcl = Skill('CRCL')
+crcl.add_dependency(arti, 4)
+crcl.add_dependency(fshi, 4)
+Skill.all_skills.append(crcl)
+
+crta = Skill('CRTA')
+crta.add_dependency(arti, 2)
+crta.add_dependency(true, 3)
+Skill.all_skills.append(crta)
+
+crpa = Skill('CRPA')
+crpa.add_dependency(arti, 1)
+crpa.add_dependency(sshi, 3)
+Skill.all_skills.append(crpa)
+
+crru = Skill('CRRU')
+crru.add_dependency(arti, 2)
+crru.add_dependency(fear, 3)
+Skill.all_skills.append(crru)
+
+crss = Skill('CRSS')
+crss.add_dependency(arti, 1)
+crss.add_dependency(eshi, 3)
+Skill.all_skills.append(crss)
+
+crma = Skill('CRMA')
+crma.add_dependency(arti, 1)
+crma.add_dependency(weat, 3)
+Skill.all_skills.append(crma)
+
+engr = Skill('ENGR')
+engr.add_dependency(arti, 2)
+engr.add_dependency(eshi, 3)
+engr.add_dependency(sshi, 3)
+Skill.all_skills.append(engr)
+
+cgat = Skill('CGAT')
+cgat.add_dependency(arti, 2)
+cgat.add_dependency(gate, 3)
+Skill.all_skills.append(cgat)
+
+eswo = Skill('ESWO')
+eswo.add_dependency(arti, 2)
+Skill.all_skills.append(eswo)
+
+earm = Skill('EARM')
+earm.add_dependency(arti, 2)
+Skill.all_skills.append(earm)
+
+eshd = Skill('ESHD')
+eshd.add_dependency(arti, 1)
+Skill.all_skills.append(eshd)
+
+cpor = Skill('CPOR')
+cpor.add_dependency(arti, 1)
+cpor.add_dependency(port, 2)
+Skill.all_skills.append(cpor)
+
+cfsw = Skill('CFSW')
+cfsw.add_dependency(arti, 2)
+cfsw.add_dependency(fire, 3)
+Skill.all_skills.append(cfsw)
+
+crag = Skill('CRAG')
+crag.add_dependency(arti, 2)
+crag.add_dependency(true, 5)
+Skill.all_skills.append(crag)
+
+crwc = Skill('CRWC')
+crwc.add_dependency(arti, 1)
+crwc.add_dependency(swin, 2)
+Skill.all_skills.append(crwc)
+
+crgc = Skill('CRGC')
+crgc.add_dependency(arti, 2)
+crgc.add_dependency(gate, 2)
+Skill.all_skills.append(crgc)
+
+crsh = Skill('CRSH')
+crsh.add_dependency(arti, 2)
+crsh.add_dependency(mhea, 2)
+Skill.all_skills.append(crsh)
+

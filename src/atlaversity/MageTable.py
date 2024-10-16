@@ -14,7 +14,8 @@ class MageTable(DataTable):
         skill_union = set()
         for m in self.turns[len(self.turns) - 1].end_mages:
             for skill_level in m.skill_levels:
-                skill_union.add(skill_level.name)
+                if skill_level.name != '':
+                    skill_union.add(skill_level.name)
         self.trained_skills = list(skill_union)
         self.trained_skills.sort()
 

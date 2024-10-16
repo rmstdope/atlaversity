@@ -85,3 +85,7 @@ def test_teaching_with_no_teach(mages):
             assert turn.get_teacher_num_by_mage(e_mage) == -1
             assert turn.get_taught_by_num(s_mage) == 0
             assert turn.is_taught(s_mage) == True
+
+def test_incorrect_order_length(mages):
+    with pytest.raises(ValueError):
+        turn = Turn(mages, ',,', 10)

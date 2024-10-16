@@ -38,43 +38,43 @@ def test_invalid_skill_level(mage):
 def test_can_study_foundations(mage):
     with pytest.raises(ValueError):
         assert mage.can_study('invalid') == False
-    assert mage.can_study('FORC') == True
-    assert mage.can_study('PATT') == True
-    assert mage.can_study('SPIR') == True
+    assert mage.can_study('FORC') == (True, '')
+    assert mage.can_study('PATT') == (True, '')
+    assert mage.can_study('SPIR') == (True, '')
 
 def test_can_study_max_level(mage):
     mage.add_skill(SkillLevel('FORC', LEVEL_5_DAYS))
-    assert mage.can_study('FORC') == False
+    assert mage.can_study('FORC') == (False, 'Already at skill level 5.')
 
 def test_can_study_simple_prereq(mage):
-    assert mage.can_study('FIRE') == False
+    assert mage.can_study('FIRE') == (False, 'Missing prerequisite: FORC1. ')
     mage.add_skill(SkillLevel('FORC', LEVEL_3_DAYS))
-    assert mage.can_study('FIRE') == True
-    assert mage.can_study(Skill.string_to_skill('FIRE')) == True
+    assert mage.can_study('FIRE') == (True, '')
+    assert mage.can_study(Skill.string_to_skill('FIRE')) == (True, '')
 
 def test_can_study_simple_prereq_nok(mage):
     mage.add_skill(SkillLevel('FORC', LEVEL_3_DAYS))
-    assert mage.can_study('FIRE') == True
+    assert mage.can_study('FIRE') == (True, '')
     mage.add_skill(SkillLevel('FIRE', LEVEL_3_DAYS))
-    assert mage.can_study('FIRE') == False
+    assert mage.can_study('FIRE') == (False, 'Missing prerequisite: FORC4. ')
 
 def test_can_study_advanced_prereq_nok1(mage):
-    assert mage.can_study('DRAG') == False
+    assert mage.can_study('DRAG') == (False, 'Missing prerequisite: BIRD3. Missing prerequisite: WOLF3. ')
     mage.add_skill(SkillLevel('WOLF', LEVEL_3_DAYS - 1))
     mage.add_skill(SkillLevel('BIRD', LEVEL_3_DAYS))
-    assert mage.can_study('DRAG') == False
+    assert mage.can_study('DRAG') == (False, 'Missing prerequisite: WOLF3. ')
 
 def test_can_study_advanced_prereq_nok2(mage):
-    assert mage.can_study('DRAG') == False
+    assert mage.can_study('DRAG') == (False, 'Missing prerequisite: BIRD3. Missing prerequisite: WOLF3. ')
     mage.add_skill(SkillLevel('WOLF', LEVEL_3_DAYS))
     mage.add_skill(SkillLevel('BIRD', LEVEL_3_DAYS - 1))
-    assert mage.can_study('DRAG') == False
+    assert mage.can_study('DRAG') == (False, 'Missing prerequisite: BIRD3. ')
 
 def test_can_study_advanced_prereq_ok(mage):
-    assert mage.can_study('DRAG') == False
+    assert mage.can_study('DRAG') == (False, 'Missing prerequisite: BIRD3. Missing prerequisite: WOLF3. ')
     mage.add_skill(SkillLevel('WOLF', LEVEL_3_DAYS))
     mage.add_skill(SkillLevel('BIRD', LEVEL_3_DAYS))
-    assert mage.can_study('DRAG') == True
+    assert mage.can_study('DRAG') == (True, '')
 
 def test_train(mage):
     assert mage.get_skill_level('PATT') == 0

@@ -11,6 +11,17 @@ class StudyTable(DataTable):
         self.turns = turns
         self.editor = editor
     
+    def get_column_data(self, turn, cells):
+        for mage_num,mage in enumerate(turn.start_mages):
+            skill = turn.study[mage_num]
+            if turn.is_taught(mage):
+                skill = Text(f'{skill} (T{turn.get_taught_by_num(mage)})', style="italic #03AC13")
+            elif skill == 'TEACH':
+                skill = Text(f'{skill} ({turn.get_teacher_num_by_mage(mage)})', style="italic #1323AC")
+            elif skill == '':
+                skill = Text(f'<No study>', style="italic #03AC13")
+            cells.append(skill)
+
     def on_mount(self):
         self.cursor_type = 'cell'
         self.zebra_stripes = True
@@ -29,13 +40,10 @@ class StudyTable(DataTable):
         for m in self.turns[0].start_mages:
             rows.append([f'{m.name} ({m.id}) - {m.comment}'])
         for t in self.turns:
-            for mi,m in enumerate(t.start_mages):
-                skill = t.study[mi]
-                if t.is_taught(m):
-                    skill = Text(f'{skill} (T{t.get_taught_by_num(m)})', style="italic #03AC13")
-                elif skill == 'TEACH':
-                    skill = Text(f'{skill} ({t.get_teacher_num_by_mage(m)})', style="italic #1323AC")
-                rows[mi].append(skill)
+            cells = []
+            self.get_column_data(t, cells)
+            for i,c in enumerate(cells):
+                rows[i].append(c)
         self.add_rows(rows)
         self.tooltip = "Select a row to get more details"
         
@@ -46,7 +54,7 @@ class StudyTable(DataTable):
             mage_table = self.editor.query_one(f'#mage_table')
             study = self.turns[self.cursor_column - 1].study[self.cursor_row]
             mage_table.update_highlight(self.cursor_row)
-            if study == 'TEACH':
+            if study == 'TEACH' or study == '':
                 mage_table.cursor_type = 'none'
             else:
                 mage_table.cursor_type = 'cell'
@@ -65,16 +73,11 @@ class StudyTable(DataTable):
 
     def update(self, value : str):
         turn = self.turns[self.cursor_column - 1]
-        # mage_num = self.cursor_row
-        # mage = turn.start_mages[mage_num]
         turn.update(self.cursor_row, value)
         self.focus()
-        for mage_num,mage in enumerate(turn.start_mages):
-            skill = turn.study[mage_num]
-            if turn.is_taught(mage):
-                skill = Text(f'{skill} (T{turn.get_taught_by_num(mage)})', style="italic #03AC13")
-            elif skill == 'TEACH':
-                skill = Text(f'{skill} ({turn.get_teacher_num_by_mage(mage)})', style="italic #1323AC")
-            #r = self.
-            r,c = self.coordinate_to_cell_key((mage_num, self.cursor_column))
-            self.update_cell(r, c, skill)
+        cells = []
+        self.get_column_data(turn, cells)
+        for i,cell in enumerate(cells):
+            r,c = self.coordinate_to_cell_key((i, self.cursor_column))
+            self.update_cell(r, c, cell)
+

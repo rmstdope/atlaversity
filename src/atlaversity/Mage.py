@@ -123,15 +123,16 @@ class Mage:
         skill = self.ensure_skill_object(skill)
         can = True
         if self.has_skill(skill.name) and self.get_skill_level(skill.name) == 5:
-            return False
+            return (False, 'Already at skill level 5.')
+        msg = f''
         for d in skill.dependencies:
-            m = False
             need_level = d['level']
             if self.has_skill(skill.name):
                 need_level = max(need_level, self.get_skill_level(skill.name) + 1)	
             if not self.has_skill_level(d['skill'].name, need_level):
                 can = False
-        return can
+                msg += f'Missing prerequisite: {d["skill"].name}{need_level}. '
+        return (can, msg)
 
     def train(self, skill, days):
         skill = self.ensure_skill_object(skill)

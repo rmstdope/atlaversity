@@ -31,6 +31,8 @@ class Turn:
         self.study = data.split(',')
         self.start_mages = mages
         self.num = num
+        if len(self.study) != len(mages):
+            raise ValueError(f'Number of mages is not equal to number of orders in turn {num}')
         self.recalculate()
         self.run_turn()
 
@@ -58,8 +60,10 @@ class Turn:
         
     def check_study_prerequisites(self):
         for j,m in enumerate(self.start_mages):
-            if not self.is_teaching(j) and not m.can_study(self.study[j]):
-                error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}')
+            if not self.is_teaching(j):
+                (can, reason) = m.can_study(self.study[j])
+                if not can:
+                    error(f'Error: {m.name} ({m.id}) cannot study {self.study[j]}: {reason}')
 
     def setup_teachers(self):
         for j,m in enumerate(self.start_mages):
