@@ -21,8 +21,8 @@ consts.CMD_RELOAD = 'reload'
 consts.CMD_EDIT = 'edit'
 consts.CMD_QUIT = 'quit'
 commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_QUIT]
-factions = [20, 34, 47, 62, 80]
-start_turn = 15
+factions = [20, 34, 47, 62, 64, 80]
+start_turn = 16
 editor = None
 
 def reload():
@@ -106,8 +106,8 @@ def create_nested_completer():
 
 data = f''
 while len(Turn.all_turns) > 0:
-    # data = session.prompt('Command> ', completer=create_nested_completer())
-    data = consts.CMD_EDIT
+    data = session.prompt('Command> ', completer=create_nested_completer())
+    # data = consts.CMD_EDIT
     cmds = data.split(' ')
     turn = get_turn(cmds)
     mages = get_mages(cmds)
@@ -141,4 +141,4 @@ while len(Turn.all_turns) > 0:
                 editor = OrderEditor(Turn.all_turns)
             case consts.CMD_QUIT:
                 break
-    break
+    # break

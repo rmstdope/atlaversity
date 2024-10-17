@@ -6,6 +6,7 @@ from Prompt import Prompt
 from StudyTable import StudyTable
 from MageTable import MageTable
 from ValueSelector import ValueSelector
+from ValueInput import ValueInput
 
 class OrderEditor(App):
     BINDINGS = [
@@ -23,7 +24,7 @@ class OrderEditor(App):
         yield Header()
         yield self.study_table
         yield MageTable(self, self.turns)
-        yield Prompt('prompt', self)
+        # yield Prompt('prompt', self)
 
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
@@ -31,11 +32,23 @@ class OrderEditor(App):
     def action_save(self) -> None:
         shutil.copyfile('mages-plan.csv', 'mages-plan.backup')
 
-    def select_value(self, name, header, skills):
-        self.selector = ValueSelector(self, name, header, skills)
+    def select_value(self, header, skills, callback, context = None):
+        self.selector = ValueSelector(self, header, skills, callback, context)
         self.mount(self.selector)
         self.selector.focus()
 
-    def value_selected(self, value):
+    def value_selected(self, value, callback, context):
         self.selector.remove()
-        self.study_table.update(value)  
+        if callback is not None:
+            callback(value, context)
+
+    def enter_value(self, header, callback, context = None):
+        self.selector = ValueInput(self, header, callback, context)
+        self.mount(self.selector)
+        self.selector.focus()
+
+    def value_entered(self, value, callback, context):
+        self.selector.remove()
+        if callback is not None:
+            callback(value, context)
+

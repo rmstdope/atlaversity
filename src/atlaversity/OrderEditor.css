@@ -3,21 +3,28 @@ Screen {
     layers: standard above;
 }
 
-Input {
+/* Input {
     border: none;
     height: 1;
-}
+} */
 
-Input:focus {
+/* Input:focus {
     border: none;
     height: 1;
-}
+} */
 
 Prompt {
     dock: bottom;
 }
 
 ValueSelector {
+    layer: above;
+    width: auto;
+    border: double orange;
+    text-align: center;
+}
+
+ValueInput {
     layer: above;
     width: auto;
     border: double orange;

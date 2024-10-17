@@ -47,13 +47,25 @@ class Turn:
             for mi, m in enumerate(self.start_mages):
                 if m not in self.teachers and teacher.can_teach(m, self.study[mi]) and m.id not in self.no_teach[ti]:
                     self.taught[ti].append(m)
-        # For now, assume at most two teachers
         for m in self.start_mages:
-            if len(self.taught) > 1 and m in self.taught[0] and m in self.taught[1]:
-                if len(self.taught[0]) > len(self.taught[1]):
-                    self.taught[0].remove(m)
+            num = 0
+            students = []
+            for taught in self.taught:
+                if m in taught:
+                    num += 1
+                    students.append(len(taught))
                 else:
-                    self.taught[1].remove(m)
+                    students.append(-1)
+            while num > 1:
+                index_max = max(range(len(students)), key=students.__getitem__)
+                students[index_max] = -1
+                num -= 1
+                self.taught[index_max].remove(m)
+            # if len(self.taught) > 1 and m in self.taught[0] and m in self.taught[1]:
+            #     if len(self.taught[0]) > len(self.taught[1]):
+            #         self.taught[0].remove(m)
+            #     else:
+            #         self.taught[1].remove(m)
         for ti, teacher in enumerate(self.teachers):
             if len(self.taught[ti]) > 10:
                 Logging.warning(f'Warning: More than ten ({len(self.taught[ti])}) students for {teacher.name} in turn {self.num}.')

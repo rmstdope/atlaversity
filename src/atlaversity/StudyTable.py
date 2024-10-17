@@ -69,26 +69,33 @@ class StudyTable(DataTable):
         mage = self.turns[self.cursor_column - 1].start_mages[self.cursor_row]
         skills = mage.get_can_study_list()
         skills.append('TEACH')
-        self.editor.select_value('select_skill', 'Select Skill', skills)
+        self.editor.select_value('Select Skill', skills, self.update)
 
     def can_update(self, value : str) -> bool:
         return self.turns[self.cursor_column - 1].can_update(self.cursor_row, value)
 
-    def update(self, value : str):
-        if value == 'OK':
-            return
-        turn = self.turns[self.cursor_column - 1]
-        Logging.clear_message_list()
-        turn.update(self.cursor_row, value)
-        self.focus()
-        cells = []
-        self.get_column_data(turn, cells)
-        for i,cell in enumerate(cells):
-            r,c = self.coordinate_to_cell_key((i, self.cursor_column))
-            self.update_cell(r, c, cell)
-        if len(Logging.get_message_list()) > 0:
-            s = ''
-            for m in Logging.get_message_list():
-                s = s + m + '\n'
-            self.editor.select_value('ok_box', s, ['OK'])
+    def update(self, value : str, context):
+        if context is not None and context[:5] == 'TEACH':
+            if value != '':
+                self.editor.enter_value('Exclude mage (Type ID or press Enter for none)', self.update, context + f'-{value}')
+                return
+            else:
+                value = context
+        if value == 'TEACH':
+            self.editor.enter_value('Exclude mage (Type ID or press Enter for none)', self.update, 'TEACH')
+        else:            
+            turn = self.turns[self.cursor_column - 1]
+            Logging.clear_message_list()
+            turn.update(self.cursor_row, value)
+            self.focus()
+            cells = []
+            self.get_column_data(turn, cells)
+            for i,cell in enumerate(cells):
+                r,c = self.coordinate_to_cell_key((i, self.cursor_column))
+                self.update_cell(r, c, cell)
+            if len(Logging.get_message_list()) > 0:
+                s = ''
+                for m in Logging.get_message_list():
+                    s = s + m + '\n'
+                self.editor.select_value(s, ['OK'], None)
 
