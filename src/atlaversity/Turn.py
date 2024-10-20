@@ -6,6 +6,52 @@ from Mage import *
 
 class Turn:
     all_turns = []
+    comments = []
+
+    @staticmethod
+    def save_to_file(file):
+        f = open(file, 'w')
+        row = 0
+        comment = 0
+        for i,m in enumerate(Turn.all_turns[0].start_mages):
+            if i > 0:
+                f.write(',')
+            f.write(str(m.id))
+        f.write('\n')
+        row += 1
+        for i,m in enumerate(Turn.all_turns[0].start_mages):
+            if i == 0:
+                f.write('#')
+            else:
+                f.write(',')
+            f.write(m.name)
+        f.write('\n')
+        row += 1
+        for i,m in enumerate(Turn.all_turns[0].start_mages):
+            if i == 0:
+                f.write('#')
+            else:
+                f.write(',')
+            f.write(m.comment)
+        f.write('\n')
+        row += 1
+        for t in Turn.all_turns:
+            while len(Turn.comments) > comment and Turn.comments[comment][0] == row:
+                f.write(Turn.comments[comment][1])
+                f.write('\n')
+                comment += 1
+                row += 1
+            for i,s in enumerate(t.study):
+                if i > 0:
+                    f.write(',')
+                f.write(str(s))
+            f.write('\n')
+            row += 1
+        while len(Turn.comments) > comment and Turn.comments[comment][0] == row:
+            f.write(Turn.comments[comment][1])
+            f.write('\n')
+            comment += 1
+            row += 1
 
     @staticmethod
     def read_from_file(file, turn):
@@ -16,16 +62,18 @@ class Turn:
         for i,mage_id in enumerate(strs[0].split(',')):
             if int(mage_id.strip()) != Mage.all_mages[i].id:
                 raise ValueError('mages in plan file does not match the mage list')
-        for i,comment in enumerate(strs[1].split(',')):
+        for i,comment in enumerate(strs[2][1:].split(',')):
             Mage.all_mages[i].comment = comment
         last_mages = Mage.all_mages
         turn_num = turn
-        for i in range(2,len(strs)):
+        for i in range(3,len(strs)):
             if strs[i][0] != '#':
                 p = Turn(last_mages, strs[i], turn_num)
                 Turn.all_turns.append(p)
                 last_mages = p.end_mages
                 turn_num += 1
+            else:
+                Turn.comments.append((i, strs[i]))
 
     def __init__(self, mages, data, num):
         self.study = data.split(',')

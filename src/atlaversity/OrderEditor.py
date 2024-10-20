@@ -2,6 +2,7 @@ from textual.app import App, ComposeResult
 from textual.widgets import Header
 import shutil
 
+from Turn import Turn
 from Prompt import Prompt
 from StudyTable import StudyTable
 from MageTable import MageTable
@@ -31,6 +32,7 @@ class OrderEditor(App):
 
     def action_save(self) -> None:
         shutil.copyfile('mages-plan.csv', 'mages-plan.backup')
+        Turn.save_to_file('mages-plan-new.csv')
 
     def select_value(self, header, skills, callback, context = None):
         self.selector = ValueSelector(self, header, skills, callback, context)
