@@ -304,3 +304,31 @@ crsh.add_dependency(arti, 2)
 crsh.add_dependency(mhea, 2)
 Skill.all_skills.append(crsh)
 
+crso = Skill('CRSH')
+crso.add_dependency(arti, 2)
+crso.add_dependency(fars, 2)
+Skill.all_skills.append(crso)
+
+crco = Skill('CRCO')
+crco.add_dependency(arti, 1)
+crco.add_dependency(eart, 2)
+Skill.all_skills.append(crco)
+
+crbx = Skill('CRBX')
+crbx.add_dependency(arti, 2)
+crbx.add_dependency(bdem, 2)
+Skill.all_skills.append(crbx)
+
+crhs = Skill('CRHS')
+crhs.add_dependency(arti, 2)
+crhs.add_dependency(bund, 2)
+Skill.all_skills.append(crhs)
+
+crcn = Skill('CRCN')
+crcn.add_dependency(arti, 2)
+crcn.add_dependency(fshi, 3)
+Skill.all_skills.append(crcn)
+
+trns = Skill('TRNS')
+trns.add_dependency(arti, 1)
+Skill.all_skills.append(trns)
