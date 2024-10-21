@@ -15,12 +15,17 @@ class StudyTable(DataTable):
     def get_column_data(self, turn, cells):
         for mage_num,mage in enumerate(turn.start_mages):
             skill = turn.study[mage_num]
+            housing = ''
+            if skill != '' and skill != 'TEACH' and turn.start_mages[mage_num].get_skill_level(skill) >= 2:
+                housing = '*'
             if turn.is_taught(mage):
-                skill = Text(f'{skill} (T{turn.get_taught_by_num(mage)})', style="italic #03AC13")
+                skill = Text(f'{skill} (T{turn.get_taught_by_num(mage)}){housing}' , style="italic #03AC13")
             elif skill == 'TEACH':
                 skill = Text(f'{skill} ({turn.get_teacher_num_by_mage(mage)})', style="italic #1323AC")
             elif skill == '':
                 skill = Text(f'<No study>', style="italic #03AC13")
+            else:
+                skill += housing
             cells.append(skill)
 
     def enumerate_skills(self):
@@ -68,7 +73,7 @@ class StudyTable(DataTable):
             mage_table.update()
             self.old_column = self.cursor_coordinate.column
         study = self.turns[self.cursor_column - 1].study[self.cursor_row]
-        if study == 'TEACH':
+        if study not in self.trained_skills:
             mage_table.highlight(self.cursor_coordinate.row, -1, study)
         else:
             mage_table.highlight(self.cursor_coordinate.row, self.trained_skills.index(study) - 1, study)

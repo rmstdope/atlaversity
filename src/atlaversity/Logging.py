@@ -34,7 +34,7 @@ class Logging():
 
     @staticmethod
     def ok(msg):
-        green(msg)
+        Logging.green(msg)
 
     @staticmethod
     def warning(msg):
