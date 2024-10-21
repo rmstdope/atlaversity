@@ -25,7 +25,6 @@ class OrderEditor(App):
         yield Header()
         yield self.study_table
         yield MageTable(self, self.turns)
-        # yield Prompt('prompt', self)
 
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
@@ -35,7 +34,7 @@ class OrderEditor(App):
         Turn.save_to_file('mages-plan-new.csv')
 
     def select_value(self, header, skills, callback, context = None):
-        self.selector = ValueSelector(self, header, skills, callback, context)
+        self.selector   = ValueSelector(self, header, skills, callback, context)
         self.mount(self.selector)
         self.selector.focus()
 

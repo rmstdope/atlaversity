@@ -82,7 +82,6 @@ class Turn:
         if len(self.study) != len(mages):
             raise ValueError(f'Number of mages is not equal to number of orders in turn {num}')
         self.recalculate()
-        self.run_turn()
 
     def reset(self):
         self.end_mages = [deepcopy(m) for m in self.start_mages]
@@ -179,4 +178,5 @@ class Turn:
         self.setup_teachers()
         self.setup_teaching()
         self.check_study_prerequisites()
+        self.run_turn()
 

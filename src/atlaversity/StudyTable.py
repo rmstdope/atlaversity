@@ -23,20 +23,15 @@ class StudyTable(DataTable):
                 skill = Text(f'<No study>', style="italic #03AC13")
             cells.append(skill)
 
-    def on_mount(self):
-        self.cursor_type = 'cell'
-        self.zebra_stripes = True
+    def enumerate_skills(self):
         skill_union = set()
         for m in self.turns[len(self.turns) - 1].end_mages:
             for skill_level in m.skill_levels:
                 skill_union.add(skill_level.name)
         self.trained_skills = list(skill_union)
         self.trained_skills.sort()
-        self.old_column = self.cursor_coordinate.column
-        columns = ['Mage']
-        for t in self.turns:
-            columns.append(str(t.num))
-        self.add_columns(*columns)
+        
+    def setup_rows(self):
         rows = []
         for m in self.turns[0].start_mages:
             rows.append([f'{m.name} ({m.id}) - {m.comment}'])
@@ -46,24 +41,37 @@ class StudyTable(DataTable):
             for i,c in enumerate(cells):
                 rows[i].append(c)
         self.add_rows(rows)
+
+    def setup_columns(self):
+        columns = ['Mage']
+        for t in self.turns:
+            columns.append(str(t.num))
+        self.add_columns(*columns)
+
+    def on_mount(self):
+        self.cursor_type = 'cell'
+        self.zebra_stripes = True
+        self.old_column = self.cursor_coordinate.column
+        self.enumerate_skills()
+        self.setup_columns()
+        self.setup_rows()
         self.tooltip = "Select a row to get more details"
-        
-    def on_data_table_cell_highlighted(self):
+
+    def limit_cursor(self):
         if self.cursor_coordinate.column == 0:
             self.cursor_coordinate = self.cursor_coordinate.right()
+
+    def on_data_table_cell_highlighted(self):
+        self.limit_cursor()
+        mage_table = self.editor.query_one(f'#mage_table')
+        if self.old_column != self.cursor_coordinate.column:
+            mage_table.update()
+            self.old_column = self.cursor_coordinate.column
+        study = self.turns[self.cursor_column - 1].study[self.cursor_row]
+        if study == 'TEACH':
+            mage_table.highlight(self.cursor_coordinate.row, -1, study)
         else:
-            mage_table = self.editor.query_one(f'#mage_table')
-            study = self.turns[self.cursor_column - 1].study[self.cursor_row]
-            mage_table.update_highlight(self.cursor_row)
-            if study == 'TEACH' or study == '':
-                mage_table.cursor_type = 'none'
-            else:
-                mage_table.cursor_type = 'cell'
-                col = self.trained_skills.index(study) + 1
-                mage_table.move_cursor(row = self.cursor_coordinate.row, column = col, animate = True)
-            if self.old_column != self.cursor_coordinate.column:
-                mage_table.update()
-                self.old_column = self.cursor_coordinate.column
+            mage_table.highlight(self.cursor_coordinate.row, self.trained_skills.index(study) - 1, study)
 
     def on_data_table_cell_selected(self):
         mage = self.turns[self.cursor_column - 1].start_mages[self.cursor_row]
@@ -81,7 +89,7 @@ class StudyTable(DataTable):
                 return
             else:
                 value = context
-        if value == 'TEACH':
+        if value == 'TEACH' and context != value:
             self.editor.enter_value('Exclude mage (Type ID or press Enter for none)', self.update, 'TEACH')
         else:            
             turn = self.turns[self.cursor_column - 1]
@@ -93,9 +101,13 @@ class StudyTable(DataTable):
             for i,cell in enumerate(cells):
                 r,c = self.coordinate_to_cell_key((i, self.cursor_column))
                 self.update_cell(r, c, cell)
+            mage_table = self.editor.query_one(f'#mage_table')
+            mage_table.update()
             if len(Logging.get_message_list()) > 0:
                 s = ''
                 for m in Logging.get_message_list():
                     s = s + m + '\n'
                 self.editor.select_value(s, ['OK'], None)
 
+    def get_turn_num(self):
+        return self.cursor_coordinate.column - 1

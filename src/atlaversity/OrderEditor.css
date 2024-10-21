@@ -1,6 +1,7 @@
 Screen {
     align: center middle;
     layers: standard above;
+    layout: horizontal;
 }
 
 /* Input {
@@ -13,9 +14,9 @@ Screen {
     height: 1;
 } */
 
-Prompt {
+/* Prompt {
     dock: bottom;
-}
+} */
 
 ValueSelector {
     layer: above;

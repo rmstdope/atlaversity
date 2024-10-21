@@ -10,7 +10,7 @@ class MageTable(DataTable):
     def on_mount(self):
         self.cursor_type = 'cell'
         self.zebra_stripes = True
-        self.fixed_columns = 1
+        #self.fixed_columns = 1
         skill_union = set()
         for m in self.turns[len(self.turns) - 1].end_mages:
             for skill_level in m.skill_levels:
@@ -19,22 +19,21 @@ class MageTable(DataTable):
         self.trained_skills = list(skill_union)
         self.trained_skills.sort()
 
-        self.add_column('Mage', key='Mage')
+        # self.add_column('Mage', key='Mage')
         for skill in self.trained_skills:
             self.add_column(skill, key=skill)
         for m1 in self.turns[0].start_mages:
             row = []
-            row.append(f'{m1.name} ({m1.id})')
+            # row.append(f'{m1.name} ({m1.id})')
             for skill in self.trained_skills:
                 row.append('')
             self.add_row(*row, height=1, key=f'{m1.id}')
-        self.tooltip = "Select a row to get more details"
         self.update()
 
     def update(self):
         if hasattr(self, 'trained_skills'):
             widget = self.editor.query_one(f'#study_table')
-            turn = widget.cursor_coordinate.column - 1
+            turn = widget.get_turn_num()
             for m1,m2 in zip(self.turns[turn].start_mages, self.turns[turn].end_mages):
                 for skill in self.trained_skills:
                     d1 = m1.get_skill_level_and_days(skill)
@@ -47,24 +46,16 @@ class MageTable(DataTable):
                     else:
                         self.update_cell(str(m1.id), skill, f'')
 
-    def on_data_table_column_highlighted(self):
-        if self.cursor_coordinate.column == 0:
-            self.cursor_coordinate = self.cursor_coordinate.right()
-
-    def update_highlight(self, row):
-        if self.is_mounted:
-            for i in range(row - 1,row + 2):
-                if self.is_valid_row_index(i):
-                    mage = self.turns[0].start_mages[i]
-                    r,c = self.coordinate_to_cell_key((i, 0))
-                    if i == row:
-                        self.update_cell(r, c, f'>> {mage.name} ({mage.id}) <<')
-                    else:
-                        self.update_cell(r, c, f'{mage.name} ({mage.id})')
-        
+    def highlight(self, row, col, study):
+        if study == 'TEACH' or study == '':
+            self.cursor_type = 'row'
+            self.move_cursor(row = row, column = 0, animate = True)
+        else:
+            self.cursor_type = 'cell'
+            self.move_cursor(row = row, column = col, animate = True)
 
     def on_focus(self):
-        self.cursor_type = 'column'
+        self.cursor_type = 'row'
 
     def on_blur(self):
         self.cursor_type = 'none'
