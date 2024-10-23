@@ -88,6 +88,10 @@ class Turn:
 
     def reset(self):
         self.end_mages = [deepcopy(m) for m in self.start_mages]
+        if hasattr(self, 'teachers'):
+            for i,m in enumerate(self.start_mages):
+                for no in self.get_no_teach(i):
+                    self.study[i] += f'-{no}'
         self.teachers = []
         self.taught = []
         self.no_teach = []
