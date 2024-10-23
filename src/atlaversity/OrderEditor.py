@@ -32,9 +32,10 @@ class OrderEditor(App):
     def action_save(self) -> None:
         shutil.copyfile('mages-plan.csv', 'mages-plan.backup')
         Turn.save_to_file('mages-plan-new.csv')
+        self.select_value('File saved', ['OK'])
 
-    def select_value(self, header, skills, callback, context = None):
-        self.selector   = ValueSelector(self, header, skills, callback, context)
+    def select_value(self, header, skills, callback = None, context = None):
+        self.selector = ValueSelector(self, header, skills, callback, context)
         self.mount(self.selector)
         self.selector.focus()
 
