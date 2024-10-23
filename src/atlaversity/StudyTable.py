@@ -16,12 +16,12 @@ class StudyTable(DataTable):
         for mage_num,mage in enumerate(turn.start_mages):
             skill = turn.study[mage_num]
             housing = ''
-            if skill != '' and skill != 'TEACH' and turn.start_mages[mage_num].get_skill_level(skill) >= 2:
+            if skill != '' and not skill.startswith('TEACH') and turn.start_mages[mage_num].get_skill_level(skill) >= 2:
                 housing = '*'
             if turn.is_taught(mage):
                 skill = Text(f'{skill} (T{turn.get_taught_by_num(mage)}){housing}' , style="italic #03AC13")
-            elif skill == 'TEACH':
-                skill = Text(f'{skill} ({turn.get_teacher_num_by_mage(mage)})', style="italic #1323AC")
+            elif skill.startswith('TEACH'):
+                skill = Text(f'TEACH ({turn.get_teacher_num_by_mage(mage)})', style="italic #1323AC")
             elif skill == '':
                 skill = Text(f'<No study>', style="italic #03AC13")
             else:

@@ -45,9 +45,9 @@ class Turn:
                 if i > 0:
                     f.write(',')
                 f.write(str(s))
-                if t.is_teaching(i):
-                    for no in t.get_no_teach(i):
-                        f.write(f'-{no}')
+                # if t.is_teaching(i):
+                #     for no in t.get_no_teach(i):
+                #         f.write(f'-{no}')
             f.write('\n')
             row += 1
         while len(Turn.comments) > comment and Turn.comments[comment][0] == row:
@@ -88,10 +88,6 @@ class Turn:
 
     def reset(self):
         self.end_mages = [deepcopy(m) for m in self.start_mages]
-        if hasattr(self, 'teachers'):
-            for i,m in enumerate(self.start_mages):
-                for no in self.get_no_teach(i):
-                    self.study[i] += f'-{no}'
         self.teachers = []
         self.taught = []
         self.no_teach = []
@@ -133,17 +129,17 @@ class Turn:
                 self.taught.append([])
                 self.no_teach.append([])
                 no_teach = self.study[j].split('-')
-                self.study[j] = 'TEACH'
+                # self.study[j] = 'TEACH'
                 for t in no_teach[1:]:
                     self.no_teach[len(self.no_teach) - 1].append(int(t))
 
     def run_turn(self):
         for j,m in enumerate(self.start_mages):
-            if self.study[j] != 'TEACH' and self.study[j] != '':
+            if not self.study[j].startswith('TEACH') and self.study[j] != '':
                 self.end_mages[j].train(Skill.string_to_skill(self.study[j]), 60 if self.is_taught(self.start_mages[j]) else 30)
 
     def is_teaching(self, index):
-        return self.study[index] == 'TEACH'
+        return self.study[index].startswith('TEACH')
         
     def get_taught_by_num(self, mage):
         for ti,students in enumerate(self.taught):
