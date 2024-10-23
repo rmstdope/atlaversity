@@ -97,9 +97,15 @@ class StudyTable(DataTable):
         if value == 'TEACH' and context != value:
             self.editor.enter_value('Exclude mage (Type ID or press Enter for none)', self.update, 'TEACH')
         else:            
-            turn = self.turns[self.cursor_column - 1]
             Logging.clear_message_list()
+            turn = self.turns[self.cursor_column - 1]
             turn.update(self.cursor_row, value)
+            start_mages = turn.end_mages
+            for turn in self.turns[self.cursor_column:]:
+                turn.start_mages = start_mages
+                turn.recalculate()
+                start_mages = turn.end_mages
+            turn = self.turns[self.cursor_column - 1]
             self.focus()
             cells = []
             self.get_column_data(turn, cells)
