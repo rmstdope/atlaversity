@@ -76,7 +76,7 @@ class StudyTable(DataTable):
         if study not in self.trained_skills:
             mage_table.highlight(self.cursor_coordinate.row, -1, study)
         else:
-            mage_table.highlight(self.cursor_coordinate.row, self.trained_skills.index(study) - 1, study)
+            mage_table.highlight(self.cursor_coordinate.row, self.trained_skills.index(study), study)
 
     def on_data_table_cell_selected(self):
         mage = self.turns[self.cursor_column - 1].start_mages[self.cursor_row]

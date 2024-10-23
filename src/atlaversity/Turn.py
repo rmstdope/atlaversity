@@ -45,6 +45,9 @@ class Turn:
                 if i > 0:
                     f.write(',')
                 f.write(str(s))
+                if t.is_teaching(i):
+                    for no in t.get_no_teach(i):
+                        f.write(f'-{no}')
             f.write('\n')
             row += 1
         while len(Turn.comments) > comment and Turn.comments[comment][0] == row:
@@ -137,7 +140,7 @@ class Turn:
 
     def run_turn(self):
         for j,m in enumerate(self.start_mages):
-            if self.study[j] != 'TEACH':
+            if self.study[j] != 'TEACH' and self.study[j] != '':
                 self.end_mages[j].train(Skill.string_to_skill(self.study[j]), 60 if self.is_taught(self.start_mages[j]) else 30)
 
     def is_teaching(self, index):
@@ -158,6 +161,12 @@ class Turn:
             if teacher == mage:
                 return i
         return -1
+    
+    def get_no_teach(self, index):
+        for i,t in enumerate(self.teachers):
+            if t == self.start_mages[index]:
+                return self.no_teach[i]
+        return []
 
     def can_update(self, mage_num, study):
         ok = True
