@@ -18,11 +18,13 @@ consts.CMD_LIST_MAGE = 'mage'
 consts.CMD_CAN_STUDY ='can_study'
 consts.CMD_ORDERS ='order'
 consts.CMD_RELOAD = 'reload'
+consts.CMD_HOUSING = 'housing'
 consts.CMD_EDIT = 'edit'
 consts.CMD_QUIT = 'quit'
-commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_QUIT]
+consts.CMD_EXIT = 'exit'
+commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_HOUSING, consts.CMD_QUIT, consts.CMD_EXIT]
 factions = [20, 34, 39, 47, 62, 64, 80]
-start_turn = 18
+start_turn = 20
 editor = None
 
 def reload():
@@ -87,6 +89,12 @@ def print_can_study(m1, m2):
             Logging.green(f'{s.name} ', end='')
     print()
 
+def housing(mages):
+    Logging.green(f'The following mages need housing:')
+    for m1,m2,s in mages:
+        if s != '' and not s.startswith('TEACH') and m1.get_skill_level(s) >= 2:
+            Logging.magenta(f'{m1.long_name}')
+
 def create_nested_completer():
     skill_dict = {}
     for skill in Skill.all_skills:
@@ -125,7 +133,7 @@ while len(Turn.all_turns) > 0:
                     print_can_study(m1, m2)
             case consts.CMD_ORDERS:
                 for mi,(m1,m2,s) in enumerate(mages):
-                    if s != 'TEACH':
+                    if not s.startswith('TEACH'):
                         print(f'{m1.name} ({m1.id}) : ', end='')
                         Logging.green(f'STUDY {s}')
                     else:
@@ -136,9 +144,13 @@ while len(Turn.all_turns) > 0:
                         print()
             case consts.CMD_RELOAD:
                 reload()
+            case consts.CMD_HOUSING:
+                housing(mages)
             case consts.CMD_EDIT:
                 editor.run()
                 editor = OrderEditor(Turn.all_turns)
+            case consts.CMD_EXIT:
+                break
             case consts.CMD_QUIT:
                 break
     # break
