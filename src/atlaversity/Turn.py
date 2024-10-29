@@ -78,6 +78,14 @@ class Turn:
             else:
                 Turn.comments.append((i, strs[i]))
 
+    @staticmethod
+    def add_new_turn():
+        mages = Turn.all_turns[len(Turn.all_turns) - 1].end_mages
+        turn_num = Turn.all_turns[len(Turn.all_turns) - 1].num + 1
+        empty_study = ',' * (len(mages) - 1)
+        turn = Turn(mages, empty_study, turn_num)
+        Turn.all_turns.append(turn)
+
     def __init__(self, mages, data, num):
         self.study = data.split(',')
         self.start_mages = mages

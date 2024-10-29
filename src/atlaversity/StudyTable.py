@@ -87,6 +87,11 @@ class StudyTable(DataTable):
     def can_update(self, value : str) -> bool:
         return self.turns[self.cursor_column - 1].can_update(self.cursor_row, value)
 
+    def add_empty_turn(self, num):
+        self.add_column(str(num))
+        self.move_cursor(column = len(self.columns) - 1)
+        self.update('', None)
+
     def update(self, value : str, context):
         if context is not None and context[:5] == 'TEACH':
             if value != '':

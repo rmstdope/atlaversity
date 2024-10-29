@@ -13,6 +13,7 @@ class OrderEditor(App):
     BINDINGS = [
         ("d", "toggle_dark", "Toggle dark mode"),
         ("s", "save", "Save study list"),
+        ("+", "new_turn", "Add new turn"),
     ]
     CSS_PATH = 'OrderEditor.css'
 
@@ -33,6 +34,10 @@ class OrderEditor(App):
         shutil.copyfile('mages-plan.csv', 'mages-plan.backup')
         Turn.save_to_file('mages-plan-new.csv')
         self.select_value('File saved', ['OK'])
+
+    def action_new_turn(self) -> None:
+        Turn.add_new_turn()
+        self.study_table.add_empty_turn(Turn.all_turns[len(Turn.all_turns) - 1].num)
 
     def select_value(self, header, skills, callback = None, context = None):
         self.selector = ValueSelector(self, header, skills, callback, context)
