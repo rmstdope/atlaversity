@@ -1,5 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Header
+from textual.widgets import Footer
 import shutil
 
 from Turn import Turn
@@ -26,6 +27,7 @@ class OrderEditor(App):
         yield Header()
         yield self.study_table
         yield MageTable(self, self.turns)
+        yield Footer()
 
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark

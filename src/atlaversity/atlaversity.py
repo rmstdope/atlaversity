@@ -24,7 +24,7 @@ consts.CMD_QUIT = 'quit'
 consts.CMD_EXIT = 'exit'
 commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_HOUSING, consts.CMD_QUIT, consts.CMD_EXIT]
 factions = [20, 34, 39, 47, 62, 64, 80]
-start_turn = 20
+start_turn = 21
 editor = None
 
 def reload():
