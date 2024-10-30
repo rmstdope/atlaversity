@@ -34,7 +34,7 @@ class OrderEditor(App):
 
     def action_save(self) -> None:
         shutil.copyfile('mages-plan.csv', 'mages-plan.backup')
-        Turn.save_to_file('mages-plan-new.csv')
+        Turn.save_to_file('mages-plan.csv')
         self.select_value('File saved', ['OK'])
 
     def action_new_turn(self) -> None:
