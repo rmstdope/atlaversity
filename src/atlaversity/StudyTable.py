@@ -70,8 +70,8 @@ class StudyTable(DataTable):
         self.limit_cursor()
         mage_table = self.editor.query_one(f'#mage_table')
         if self.old_column != self.cursor_coordinate.column:
-            mage_table.update()
             self.old_column = self.cursor_coordinate.column
+            mage_table.update()
         study = self.turns[self.cursor_column - 1].study[self.cursor_row]
         if study not in self.trained_skills:
             mage_table.highlight(self.cursor_coordinate.row, -1, study)
