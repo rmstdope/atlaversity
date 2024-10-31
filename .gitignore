@@ -167,3 +167,4 @@ cython_debug/
 # Mage and study data
 *.csv
 *.backup
+atlaversity.toml

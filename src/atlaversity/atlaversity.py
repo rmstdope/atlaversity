@@ -1,4 +1,5 @@
 import types
+import tomllib
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import NestedCompleter
@@ -23,8 +24,6 @@ consts.CMD_EDIT = 'edit'
 consts.CMD_QUIT = 'quit'
 consts.CMD_EXIT = 'exit'
 commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_HOUSING, consts.CMD_QUIT, consts.CMD_EXIT]
-factions = [20, 34, 39, 47, 62, 64, 80]
-start_turn = 21
 editor = None
 
 def reload():
@@ -40,9 +39,6 @@ def reload():
         Mage.all_mages = []
         Logging.error(err)
     editor = OrderEditor(Turn.all_turns)
-
-reload()
-session = PromptSession(history=FileHistory('.atlaversity_history.txt'))
 
 def get_turn(cmds):
     if len(cmds) > 2:
@@ -114,6 +110,23 @@ def create_nested_completer():
         command_dict[command] = mage_dict
     nested_completer = NestedCompleter.from_nested_dict(command_dict)
     return nested_completer
+
+# Read game configuration from atlaversity.toml
+with open("atlaversity.toml", "rb") as configfile:
+    data = tomllib.load(configfile)
+if not 'start_turn' in data or not isinstance(data['start_turn'], int):
+    Logging.error('Error: No or incorrect "start_turn" config specified in atlaversity.toml')
+    Logging.error('Error: Use the form "start_turn = &lt;int&gt;"')
+    exit(1)
+if not 'factions' in data or not isinstance(data['factions'], list):
+    Logging.error('Error: No or incorrect "factions" config specified in atlaversity.toml')
+    Logging.error('Error: Use form factions = [&lt;int&gt;, ...]')
+    exit(1)
+start_turn = data['start_turn']
+factions = data['factions']
+
+reload()
+session = PromptSession(history=FileHistory('.atlaversity_history.txt'))
 
 data = f''
 while len(Turn.all_turns) > 0:
