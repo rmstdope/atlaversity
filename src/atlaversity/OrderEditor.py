@@ -37,6 +37,7 @@ class OrderEditor(App):
         Turn.save_to_file('mages-plan.csv')
         self.select_value('File saved', ['OK'])
 
+    # BUG Seems to cause a crash
     def action_new_turn(self) -> None:
         Turn.add_new_turn()
         self.study_table.add_empty_turn(Turn.all_turns[len(Turn.all_turns) - 1].num)
