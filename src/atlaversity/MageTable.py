@@ -45,6 +45,7 @@ class MageTable(DataTable):
                             self.update_cell(str(m1.id), skill, Text(f'{d1}>{d2}', style='italic #1DAC23'), update_width=True)
                     else:
                         self.update_cell(str(m1.id), skill, f'')
+            widget.on_data_table_cell_highlighted()
 
     def highlight(self, row, col, study):
         if study == 'TEACH' or study == '':
@@ -53,9 +54,3 @@ class MageTable(DataTable):
         else:
             self.cursor_type = 'cell'
             self.move_cursor(row = row, column = col, animate = True)
-
-    def on_focus(self):
-        self.cursor_type = 'row'
-
-    def on_blur(self):
-        self.cursor_type = 'none'

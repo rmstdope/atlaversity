@@ -91,9 +91,12 @@ def print_can_study(m1, m2):
 
 def housing(mages):
     Logging.green(f'The following mages need housing:')
+    num = 0
     for m1,m2,s in mages:
         if s != '' and not s.startswith('TEACH') and m1.get_skill_level(s) >= 2:
-            Logging.magenta(f'{m1.long_name}')
+            num += 1
+            Logging.green(f'{m1.long_name}')
+    Logging.green(f'In total, {num} mages need housing.')
 
 def create_nested_completer():
     skill_dict = {}

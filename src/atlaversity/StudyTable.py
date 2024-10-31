@@ -119,11 +119,15 @@ class StudyTable(DataTable):
                 self.update_cell(r, c, cell)
             mage_table = self.editor.query_one(f'#mage_table')
             mage_table.update()
+            self.on_data_table_cell_highlighted()
             if len(Logging.get_message_list()) > 0:
                 s = ''
                 for m in Logging.get_message_list():
                     s = s + m + '\n'
-                self.editor.select_value(s, ['OK'], None)
+                self.editor.select_value(s, ['OK'],  callback = self.ok_pressed)
+
+    def ok_pressed(self, value : str, context):
+        self.focus()
 
     def get_turn_num(self):
         return self.cursor_coordinate.column - 1
