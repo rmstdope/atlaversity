@@ -1,5 +1,4 @@
 import types
-import tomllib
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import NestedCompleter
@@ -13,6 +12,7 @@ from SkillLevel import *
 from Skill import *
 from Turn import *
 from OrderEditor import *
+import Config
 
 consts = types.SimpleNamespace()
 consts.CMD_LIST_MAGE = 'mage'
@@ -31,9 +31,9 @@ def reload():
     Turn.all_turns = []
     Mage.all_mages = []
     try:
-        for faction in factions:
-            Mage.read_from_file(faction, start_turn)
-        Turn.read_from_file('mages-plan.csv', start_turn)
+        for faction in Config.factions:
+            Mage.read_from_file(faction, Config.start_turn)
+        Turn.read_from_file('mages-plan.csv', Config.start_turn)
     except ValueError as err:
         Turn.all_turns = []
         Mage.all_mages = []
@@ -47,11 +47,11 @@ def get_turn(cmds):
         except ValueError: 
             turn_num = -1
     else:
-        turn_num = start_turn
-    if turn_num < start_turn or turn_num >= len(Turn.all_turns) + start_turn:
-        Logging.error(f'Error: Invalid turn number ({cmds[2]}). Use range {start_turn}-{len(Turn.all_turns) + start_turn - 1} inclusive.')
+        turn_num = Config.start_turn
+    if turn_num < Config.start_turn or turn_num >= len(Turn.all_turns) + Config.start_turn:
+        Logging.error(f'Error: Invalid turn number ({cmds[2]}). Use range {Config.start_turn}-{len(Turn.all_turns) + Config.start_turn - 1} inclusive.')
         return None
-    return Turn.all_turns[turn_num - start_turn]
+    return Turn.all_turns[turn_num - Config.start_turn]
 
 def get_mages(cmds):
     if len(cmds) > 1 and cmds[1].lower() != 'all':
@@ -111,20 +111,7 @@ def create_nested_completer():
     nested_completer = NestedCompleter.from_nested_dict(command_dict)
     return nested_completer
 
-# Read game configuration from atlaversity.toml
-with open("atlaversity.toml", "rb") as configfile:
-    data = tomllib.load(configfile)
-if not 'start_turn' in data or not isinstance(data['start_turn'], int):
-    Logging.error('Error: No or incorrect "start_turn" config specified in atlaversity.toml')
-    Logging.error('Error: Use the form "start_turn = &lt;int&gt;"')
-    exit(1)
-if not 'factions' in data or not isinstance(data['factions'], list):
-    Logging.error('Error: No or incorrect "factions" config specified in atlaversity.toml')
-    Logging.error('Error: Use form factions = [&lt;int&gt;, ...]')
-    exit(1)
-start_turn = data['start_turn']
-factions = data['factions']
-
+Config.read_config('atlaversity.toml')
 reload()
 session = PromptSession(history=FileHistory('.atlaversity_history.txt'))
 
