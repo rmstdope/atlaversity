@@ -4,37 +4,6 @@ from SkillLevel import *
 from Skill import *
 
 class Mage:
-    all_mages = []
-
-    @staticmethod
-    def find_by_id(mage_id):
-        for m in Mage.all_mages:
-            if m.id == int(mage_id):
-                return m
-        return None
-    
-    @staticmethod
-    def find_num_by_id(mage_id) -> int:
-        for i,m in enumerate(Mage.all_mages):
-            if m.id == int(mage_id):
-                return i
-        return -1
-
-    @staticmethod
-    def read_from_file(faction, turn):
-        file = 'mages' + str(faction).zfill(2) + str(turn).zfill(2) + '.csv'
-        f = open(file, 'r')
-        strs = f.read().splitlines()
-        for i, mage in enumerate(strs[0].split(',')[1:]):
-            d = mage.split(' ', 1)
-            m = Mage(int(d[0]), d[1])
-            for skill in strs[1:]:
-                d = skill.split(',')
-                if int(d[i + 1]) > 0 and d[0] != 'COMB' and d[0] != 'OBSE':
-                    s = SkillLevel(d[0], int(d[i + 1]))
-                    m.add_skill(s)
-            Mage.all_mages.append(m)
-
     def __init__(self, id, name):
         self.id = id
         self.name = name

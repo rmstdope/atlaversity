@@ -13,6 +13,7 @@ from Skill import *
 from Turn import *
 from OrderEditor import *
 import Config
+import Game
 
 consts = types.SimpleNamespace()
 consts.CMD_LIST_MAGE = 'mage'
@@ -25,20 +26,20 @@ consts.CMD_QUIT = 'quit'
 consts.CMD_EXIT = 'exit'
 commands = [consts.CMD_LIST_MAGE, consts.CMD_CAN_STUDY, consts.CMD_ORDERS, consts.CMD_RELOAD, consts.CMD_EDIT, consts.CMD_HOUSING, consts.CMD_QUIT, consts.CMD_EXIT]
 editor = None
+game = Game.Game()
 
 def reload():
     global editor
-    Turn.all_turns = []
-    Mage.all_mages = []
+    global game
+    game = Game.Game()
     try:
         for faction in Config.factions:
-            Mage.read_from_file(faction, Config.start_turn)
-        Turn.read_from_file('mages-plan.csv', Config.start_turn)
+            game.read_mages_from_file(faction, Config.start_turn)
+        game.read_plan_from_file('mages-plan.csv', Config.start_turn)
     except ValueError as err:
-        Turn.all_turns = []
-        Mage.all_mages = []
+        game = Game.Game()
         Logging.error(err)
-    editor = OrderEditor(Turn.all_turns)
+    editor = OrderEditor(game)
 
 def get_turn(cmds):
     if len(cmds) > 2:
@@ -48,10 +49,10 @@ def get_turn(cmds):
             turn_num = -1
     else:
         turn_num = Config.start_turn
-    if turn_num < Config.start_turn or turn_num >= len(Turn.all_turns) + Config.start_turn:
-        Logging.error(f'Error: Invalid turn number ({cmds[2]}). Use range {Config.start_turn}-{len(Turn.all_turns) + Config.start_turn - 1} inclusive.')
+    if turn_num < Config.start_turn or turn_num >= len(game.all_turns) + Config.start_turn:
+        Logging.error(f'Error: Invalid turn number ({cmds[2]}). Use range {Config.start_turn}-{len(game.all_turns) + Config.start_turn - 1} inclusive.')
         return None
-    return Turn.all_turns[turn_num - Config.start_turn]
+    return game.all_turns[turn_num - Config.start_turn]
 
 def get_mages(cmds):
     if len(cmds) > 1 and cmds[1].lower() != 'all':
@@ -59,7 +60,8 @@ def get_mages(cmds):
             mage_id = int(cmds[1])
         except ValueError: 
             mage_id = -1
-        mage_num = Mage.find_num_by_id(mage_id)
+        # TODO Move find_num_by_id to Turn
+        mage_num = game.find_num_by_id(mage_id)
         if mage_num == -1:
             Logging.error(f'Error: Mage ID does not exist ({cmds[1]}).')
             return None
@@ -99,10 +101,10 @@ def create_nested_completer():
     for skill in Skill.all_skills:
         skill_dict[skill.name] = None
     turn_dict = {}
-    for turn in Turn.all_turns:
+    for turn in game.all_turns:
         turn_dict[str(turn.num)] = skill_dict
     mage_dict = {}
-    for mage in Mage.all_mages:
+    for mage in game.all_mages:
         mage_dict[str(mage.id)] = turn_dict
     mage_dict['all'] = None
     command_dict = {}
@@ -116,7 +118,7 @@ reload()
 session = PromptSession(history=FileHistory('.atlaversity_history.txt'))
 
 data = f''
-while len(Turn.all_turns) > 0:
+while len(game.all_turns) > 0:
     data = session.prompt('Command> ', completer=create_nested_completer())
     # data = consts.CMD_EDIT
     cmds = data.split(' ')
@@ -151,7 +153,7 @@ while len(Turn.all_turns) > 0:
                 housing(mages)
             case consts.CMD_EDIT:
                 editor.run()
-                editor = OrderEditor(Turn.all_turns)
+                editor = OrderEditor(game)
             case consts.CMD_EXIT:
                 break
             case consts.CMD_QUIT:
