@@ -6,9 +6,6 @@ class Game:
     comments = []
     all_mages = []
 
-    def __init__(self):
-        pass
-
     def save_to_file(self, file):
         f = open(file, 'w')
         row = 0
@@ -102,6 +99,7 @@ class Game:
             m = Mage(int(d[0]), d[1])
             for skill in strs[1:]:
                 d = skill.split(',')
+                d[0] = d[0].strip()
                 if int(d[i + 1]) > 0 and d[0] != 'COMB' and d[0] != 'OBSE':
                     s = SkillLevel(d[0], int(d[i + 1]))
                     m.add_skill(s)

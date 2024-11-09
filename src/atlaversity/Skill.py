@@ -8,7 +8,7 @@ class Skill:
     def add_dependency(self, skill, level):
         d = {'skill': skill, 'level': level}
         self.dependencies.append(d)
-        
+
     @staticmethod
     def string_to_skill(name):
         s = next((x for x in Skill.all_skills if x.name == name), 'ERROR')
