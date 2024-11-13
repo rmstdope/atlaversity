@@ -2,9 +2,10 @@ from Mage import *
 from Turn import *
 
 class Game:
-    all_turns = []
-    comments = []
-    all_mages = []
+    def __init__(self) -> None:
+        self.all_turns = []
+        self.comments = []
+        self.all_mages = []
 
     def save_to_file(self, file):
         f = open(file, 'w')
@@ -72,8 +73,12 @@ class Game:
                 self.comments.append((i, strs[i]))
 
     def add_new_turn(self):
-        mages = self.all_turns[len(self.all_turns) - 1].end_mages
-        turn_num = self.all_turns[len(self.all_turns) - 1].num + 1
+        if len(self.all_turns) > 0:
+            mages = self.all_turns[len(self.all_turns) - 1].end_mages
+            turn_num = self.all_turns[len(self.all_turns) - 1].num + 1
+        else:
+            mages = self.all_mages
+            turn_num = 1
         empty_study = ',' * (len(mages) - 1)
         turn = Turn(mages, empty_study, turn_num)
         self.all_turns.append(turn)
