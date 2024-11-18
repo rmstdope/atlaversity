@@ -1,6 +1,6 @@
 from CommandLine import CommandLine
-import Config
+from Config import Config
 
-Config.read_config('atlaversity.toml')
-command_line = CommandLine()
+cfg = Config('atlaversity.toml')
+command_line = CommandLine(cfg)
 command_line.run()

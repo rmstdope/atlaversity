@@ -2,7 +2,8 @@ from Mage import *
 from Turn import *
 
 class Game:
-    def __init__(self) -> None:
+    def __init__(self, cfg) -> None:
+        self.config = cfg
         self.all_turns = []
         self.comments = []
         self.all_mages = []
@@ -52,7 +53,7 @@ class Game:
             row += 1
 
     def read_plan_from_file(self, file, turn):
-        f = open(file, 'r')
+        f = open(self.config.data_dir + file, 'r')
         strs = f.read().splitlines()
         if len(strs[0].split(',')) != len(self.all_mages):
             raise ValueError('mages in plan file does not match the mage list')
@@ -96,7 +97,7 @@ class Game:
         return -1
 
     def read_mages_from_file(self, faction, turn):
-        file = 'mages' + str(faction).zfill(2) + str(turn).zfill(2) + '.csv'
+        file = self.config.data_dir + 'mages' + str(faction).zfill(2) + str(turn).zfill(2) + '.csv'
         f = open(file, 'r')
         strs = f.read().splitlines()
         for i, mage in enumerate(strs[0].split(',')[1:]):
