@@ -1,6 +1,6 @@
 import pytest
 
-from Mage import *
+from atlaversity.game.Mage import *
 
 LEVEL_1_DAYS = 30
 LEVEL_2_DAYS = 90

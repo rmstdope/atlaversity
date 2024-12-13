@@ -1,6 +1,6 @@
 import pytest
 
-from src.atlaversity.Turn import *
+from atlaversity.game.Turn import *
 
 @pytest.fixture
 def mages():

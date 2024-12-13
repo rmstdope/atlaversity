@@ -14,7 +14,7 @@
                 "name": "python launch atlaversity",
                 "type": "python",
                 "request": "launch",
-                "program": "${workspaceFolder}/src/atlaversity/atlaversity.py",
+                "program": "${workspaceFolder}/src/atlaversity/__main__.py",
                 "cwd": "${workspaceFolder}/src/atlaversity/",
                 "console": "integratedTerminal",
                 "purpose": ["debug-in-terminal"]
@@ -22,6 +22,9 @@
         ]
     },
     "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/src/atlaversity/editor",
+        "${workspaceFolder}/src/atlaversity/game",
+        "${workspaceFolder}/src/atlaversity/utils",
         "${workspaceFolder}/src/atlaversity"
     ]
 }

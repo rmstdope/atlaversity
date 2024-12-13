@@ -1,7 +1,7 @@
 from prompt_toolkit import  HTML
 
-from SkillLevel import *
-from Skill import *
+from atlaversity.game.SkillLevel import *
+from atlaversity.game.Skill import *
 
 class Mage:
     def __init__(self, id, name):

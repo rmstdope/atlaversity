@@ -3,7 +3,7 @@ from textual.validation import Validator, ValidationResult
 from textual.app import ComposeResult
 from textual.suggester import SuggestFromList
 
-from Skill import *
+from atlaversity.game.Skill import *
 
 skill_names = []
 for skill in Skill.all_skills:

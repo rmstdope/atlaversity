@@ -1,5 +1,5 @@
 import tomllib
-from Logging import *
+from atlaversity.utils.Logging import *
 
 class Config:
     def __init__(self, filename):

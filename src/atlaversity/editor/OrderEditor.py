@@ -3,12 +3,12 @@ from textual.widgets import Header
 from textual.widgets import Footer
 import shutil
 
-from Game import Game
-from Prompt import Prompt
-from StudyTable import StudyTable
-from MageTable import MageTable
-from ValueSelector import ValueSelector
-from ValueInput import ValueInput
+from atlaversity.game.Game import Game
+from atlaversity.editor.Prompt import Prompt
+from atlaversity.editor.StudyTable import StudyTable
+from atlaversity.editor.MageTable import MageTable
+from atlaversity.editor.ValueSelector import ValueSelector
+from atlaversity.editor.ValueInput import ValueInput
 
 class OrderEditor(App):
     BINDINGS = [

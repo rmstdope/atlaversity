@@ -1,7 +1,7 @@
 import pytest
 import unittest.mock as mock
 
-from src.atlaversity.SkillLevel import SkillLevel
+from atlaversity.game.SkillLevel import SkillLevel
 
 def test_train():
     lvl = SkillLevel('PATT', 30)

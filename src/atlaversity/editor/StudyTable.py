@@ -1,9 +1,9 @@
 from textual.widgets import DataTable
 from rich.text import Text
 
-from Prompt import *
-from Turn import *
-from Logging import *
+from atlaversity.editor.Prompt import *
+from atlaversity.game.Turn import *
+from atlaversity.utils.Logging import *
 
 class StudyTable(DataTable):
     

@@ -1,7 +1,7 @@
 import pytest
 import unittest.mock as mock
 
-from src.atlaversity.Config import Config
+from atlaversity.utils.Config import Config
 
 def test_missing_file():
     with pytest.raises(FileNotFoundError):

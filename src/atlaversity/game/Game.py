@@ -1,5 +1,5 @@
-from Mage import *
-from Turn import *
+from atlaversity.game.Mage import *
+from atlaversity.game.Turn import *
 
 class Game:
     def __init__(self, cfg) -> None:

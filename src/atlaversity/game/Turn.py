@@ -1,8 +1,8 @@
 from copy import deepcopy
 
-from Logging import *
-from Skill import *
-from Mage import *
+from atlaversity.utils.Logging import *
+from atlaversity.game.Skill import *
+from atlaversity.game.Mage import *
 
 class Turn:
     def __init__(self, mages, data, num):

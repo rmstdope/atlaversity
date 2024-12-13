@@ -1,9 +1,8 @@
 import pytest
 import unittest.mock as mock
 
-from src.atlaversity.Game import Game
-from src.atlaversity.Config import Config
-import src.atlaversity.Config
+from atlaversity.game.Game import Game
+from atlaversity.utils.Config import Config
 
 def test_read_mages():
     with mock.patch('builtins.open', mock.mock_open(read_data=b'start_turn=1\nfactions = [20, 34, 39, 47, 62, 64, 80]\ndata_dir=\'data\'')):

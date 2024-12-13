@@ -4,8 +4,8 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.completion import NestedCompleter
 
-from Game import *
-from OrderEditor import *
+from atlaversity.game.Game import *
+from atlaversity.editor.OrderEditor import *
 
 class CommandLine(PromptSession):
 
