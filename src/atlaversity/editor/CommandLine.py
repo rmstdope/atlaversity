@@ -59,7 +59,7 @@ class CommandLine(PromptSession):
                     self.housing(mages)
                 case self.Commands.CMD_EDIT:
                     self.editor.run()
-                    self.editor = OrderEditor(self.game)
+                    self.editor = OrderEditor(self.game, self.config)
                 case self.Commands.CMD_EXIT:
                     return True
                 case self.Commands.CMD_QUIT:
@@ -83,7 +83,7 @@ class CommandLine(PromptSession):
         except ValueError as err:
             self.game = Game(self.config)
             Logging.error(err)
-        self.editor = OrderEditor(self.game)
+        self.editor = OrderEditor(self.game, self.config)
 
     def create_nested_completer(self):
         skill_dict = {}

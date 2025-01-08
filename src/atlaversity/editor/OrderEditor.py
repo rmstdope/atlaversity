@@ -18,9 +18,10 @@ class OrderEditor(App):
     ]
     CSS_PATH = 'OrderEditor.css'
 
-    def __init__(self, game):
+    def __init__(self, game, config):
         super().__init__()
         self.game = game
+        self.config = config
 
     def compose(self) -> ComposeResult:
         self.study_table = StudyTable(self, self.game.all_turns)
@@ -32,8 +33,9 @@ class OrderEditor(App):
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
 
+#TODO: Need to use the config path
     def action_save(self) -> None:
-        shutil.copyfile('mages-plan.csv', 'mages-plan.backup')
+        shutil.copyfile(self.config.data_dir + 'mages-plan.csv', self.config.data_dir + 'mages-plan.backup')
         self.game.save_to_file('mages-plan.csv')
         self.select_value('File saved', ['OK'])
 

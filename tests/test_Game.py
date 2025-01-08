@@ -97,14 +97,16 @@ FORC,PATT
 PATT,FORC
 #another comment
 '''
-    with mock.patch('builtins.open', mock.mock_open(read_data=plandata)):
+    with mock.patch('builtins.open', mock.mock_open(read_data=plandata)) as m:
         game.read_plan_from_file('plan', 10)
+        m.assert_called_once_with('data/plan', 'r')
     assert game.all_turns[0].num == 10
     assert game.all_turns[1].num == 11
     assert game.all_turns[0].study == ['FORC','PATT']
     assert game.all_turns[1].study == ['PATT','FORC']
     with mock.patch('builtins.open') as m:
         game.save_to_file('plan')
+        m.assert_called_once_with('data/plan', 'w')
     write_data = ''
     for c in m.mock_calls:
         if c[0] == '().write':

@@ -9,7 +9,7 @@ class Game:
         self.all_mages = []
 
     def save_to_file(self, file):
-        f = open(file, 'w')
+        f = open(self.config.data_dir + file, 'w')
         row = 0
         comment = 0
         for i,m in enumerate(self.all_turns[0].start_mages):
@@ -52,6 +52,7 @@ class Game:
             comment += 1
             row += 1
 
+#TODO Automatically add and remove mages from the study
     def read_plan_from_file(self, file, turn):
         f = open(self.config.data_dir + file, 'r')
         strs = f.read().splitlines()
