@@ -23,6 +23,7 @@ class OrderEditor(App):
         super().__init__()
         self.game = game
         self.config = config
+        self.selector = None
 
     def compose(self) -> ComposeResult:
         self.study_table = StudyTable(self, self.game.all_turns)
@@ -46,14 +47,16 @@ class OrderEditor(App):
         self.study_table.add_empty_turn(self.game.all_turns[len(self.game.all_turns) - 1].num)
 
     def select_value(self, header, skills, callback = None, context = None):
-        self.selector = ValueSelector(self, header, skills, callback, context)
-        self.mount(self.selector)
-        self.selector.focus()
+        if self.selector is None:
+            self.selector = ValueSelector(self, header, skills, callback, context)
+            self.mount(self.selector)
+            self.selector.focus()
 
     def value_selected(self, value, callback, context):
         self.selector.remove()
         if callback is not None:
             callback(value, context)
+        self.selector = None
 
     def enter_value(self, header, callback, context = None):
         self.selector = ValueInput(self, header, callback, context)
