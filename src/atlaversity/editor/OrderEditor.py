@@ -1,3 +1,4 @@
+import os
 from textual.app import App, ComposeResult
 from textual.widgets import Header
 from textual.widgets import Footer
@@ -35,7 +36,8 @@ class OrderEditor(App):
 
 #TODO: Need to use the config path
     def action_save(self) -> None:
-        shutil.copyfile(self.config.data_dir + 'mages-plan.csv', self.config.data_dir + 'mages-plan.backup')
+        if os.path.exists(self.config.data_dir + 'mages-plan.csv'):
+            shutil.copyfile(self.config.data_dir + 'mages-plan.csv', self.config.data_dir + 'mages-plan.backup')
         self.game.save_to_file('mages-plan.csv')
         self.select_value('File saved', ['OK'])
 

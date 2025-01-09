@@ -52,27 +52,32 @@ class Game:
             comment += 1
             row += 1
 
-#TODO Automatically add and remove mages from the study
+#TODO Automatically add and remove mages from the study plan
     def read_plan_from_file(self, file, turn):
-        f = open(self.config.data_dir + file, 'r')
-        strs = f.read().splitlines()
-        if len(strs[0].split(',')) != len(self.all_mages):
-            raise ValueError('mages in plan file does not match the mage list')
-        for i,mage_id in enumerate(strs[0].split(',')):
-            if int(mage_id.strip()) != self.all_mages[i].id:
+        try:
+            f = open(self.config.data_dir + file, 'r')
+            strs = f.read().splitlines()
+            if len(strs[0].split(',')) != len(self.all_mages):
                 raise ValueError('mages in plan file does not match the mage list')
-        for i,comment in enumerate(strs[2][1:].split(',')):
-            self.all_mages[i].comment = comment
-        last_mages = self.all_mages
-        turn_num = turn
-        for i in range(3,len(strs)):
-            if strs[i][0] != '#':
-                p = Turn(last_mages, strs[i], turn_num)
-                self.all_turns.append(p)
-                last_mages = p.end_mages
-                turn_num += 1
-            else:
-                self.comments.append((i, strs[i]))
+            for i,mage_id in enumerate(strs[0].split(',')):
+                if int(mage_id.strip()) != self.all_mages[i].id:
+                    raise ValueError('mages in plan file does not match the mage list')
+            for i,comment in enumerate(strs[2][1:].split(',')):
+                self.all_mages[i].comment = comment
+            last_mages = self.all_mages
+            turn_num = turn
+            for i in range(3,len(strs)):
+                if strs[i][0] != '#':
+                    p = Turn(last_mages, strs[i], turn_num)
+                    self.all_turns.append(p)
+                    last_mages = p.end_mages
+                    turn_num += 1
+                else:
+                    self.comments.append((i, strs[i]))
+        except FileNotFoundError:
+            Logging.warning('File not found: ' + self.config.data_dir + file + '. Creating empty plan.')
+            p = Turn(self.all_mages, ',' * (len(self.all_mages) - 1), turn)
+            self.all_turns.append(p)
 
     def add_new_turn(self):
         if len(self.all_turns) > 0:

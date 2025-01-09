@@ -25,7 +25,8 @@ When mages CSVs are exported from ALH, it needs to have the following settings:
 ## mages-plan.csv
 
 This is the actual study data file. It can be read from and written to by the application.
-The file consist of three header rows and the rest are data rows
+The file consist of three header rows and the rest are data rows.
+If the file does not exist, the application will create an empty study list and create the file upon first save.
 
 ### Header rows
 
