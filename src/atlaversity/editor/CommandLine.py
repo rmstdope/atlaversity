@@ -58,7 +58,7 @@ class CommandLine(PromptSession):
                 case self.Commands.CMD_HOUSING:
                     self.housing(mages)
                 case self.Commands.CMD_EDIT:
-                    self.editor.run()
+                    self.editor.run(mouse=False)
                     self.editor = OrderEditor(self.game, self.config)
                 case self.Commands.CMD_EXIT:
                     return True

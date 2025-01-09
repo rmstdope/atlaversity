@@ -13,9 +13,9 @@ from atlaversity.editor.ValueInput import ValueInput
 
 class OrderEditor(App):
     BINDINGS = [
-        ("d", "toggle_dark", "Toggle dark mode"),
-        ("s", "save", "Save study list"),
-        ("+", "new_turn", "Add new turn"),
+        ("ctrl+d", "toggle_dark", "Toggle dark mode"),
+        ("ctrl+s", "save", "Save study list"),
+        ("ctrl+a", "new_turn", "Add new turn"),
     ]
     CSS_PATH = 'OrderEditor.css'
 
@@ -67,4 +67,3 @@ class OrderEditor(App):
         self.selector.remove()
         if callback is not None:
             callback(value, context)
-
