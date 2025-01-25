@@ -35,7 +35,6 @@ class OrderEditor(App):
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
 
-#TODO: Need to use the config path
     def action_save(self) -> None:
         if os.path.exists(self.config.data_dir + 'mages-plan.csv'):
             shutil.copyfile(self.config.data_dir + 'mages-plan.csv', self.config.data_dir + 'mages-plan.backup')

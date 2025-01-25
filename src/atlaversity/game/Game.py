@@ -52,16 +52,32 @@ class Game:
             comment += 1
             row += 1
 
-#TODO Automatically add and remove mages from the study plan
+#TODO Automatically add mages to the study plan
     def read_plan_from_file(self, file, turn):
         try:
             f = open(self.config.data_dir + file, 'r')
             strs = f.read().splitlines()
-            if len(strs[0].split(',')) != len(self.all_mages):
-                raise ValueError('mages in plan file does not match the mage list')
-            for i,mage_id in enumerate(strs[0].split(',')):
-                if int(mage_id.strip()) != self.all_mages[i].id:
+            planids = [int(id) for id in strs[0].split(',')]
+            mageids = [m.id for m in self.all_mages]
+            addids = [id for id in mageids if id not in planids]
+            removeids = [id for id in planids if id not in mageids]
+            for id in removeids:
+                yn = ''
+                while yn != 'y' and yn != 'n':
+                    yn = input(f'Mage with id {id} is in plan but not in mage files. Remove from plan? [y/n]').lower()
+                if yn == 'n':
                     raise ValueError('mages in plan file does not match the mage list')
+            if len(addids) > 0:
+                    raise ValueError('mages in plan file does not match the mage list!!')
+            # Remove mages from plan
+            removeindices = [planids.index(id) for id in removeids]
+            for i,s in enumerate(strs):
+                data = s.split(',')
+                prefix = '#' if 0 in removeindices and data[0][0] == '#' else ''
+                for j in sorted(removeindices, reverse=True):
+                    del data[j]
+                strs[i] = prefix + ','.join(data)
+            # Add comment for each mage
             for i,comment in enumerate(strs[2][1:].split(',')):
                 self.all_mages[i].comment = comment
             last_mages = self.all_mages
