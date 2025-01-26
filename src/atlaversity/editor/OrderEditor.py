@@ -53,9 +53,9 @@ class OrderEditor(App):
 
     def value_selected(self, value, callback, context):
         self.selector.remove()
+        self.selector = None
         if callback is not None:
             callback(value, context)
-        self.selector = None
 
     def enter_value(self, header, callback, context = None):
         self.selector = ValueInput(self, header, callback, context)
@@ -64,5 +64,6 @@ class OrderEditor(App):
 
     def value_entered(self, value, callback, context):
         self.selector.remove()
+        self.selector = None
         if callback is not None:
             callback(value, context)
