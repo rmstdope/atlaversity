@@ -52,7 +52,6 @@ class Game:
             comment += 1
             row += 1
 
-#TODO Automatically add mages to the study plan
     def read_plan_from_file(self, file, turn):
         try:
             f = open(self.config.data_dir + file, 'r')
@@ -67,6 +66,7 @@ class Game:
                     yn = input(f'Mage with id {id} is in plan but not in mage files. Remove from plan? [y/n]').lower()
                 if yn == 'n':
                     raise ValueError('mages in plan file does not match the mage list')
+            #TODO Automatically add mages to the study plan
             if len(addids) > 0:
                     raise ValueError('mages in plan file does not match the mage list!!')
             # Remove mages from plan

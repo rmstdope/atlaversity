@@ -19,3 +19,12 @@ class ValueSelector(DataTable):
 
     def on_data_table_cell_selected(self):
         self.editor.value_selected(self.values[self.cursor_row], self.callback, self.context)
+
+    def on_key(self, event):
+        key = event.key.upper()
+        if key >= 'A' and key <= 'Z':
+            for i,v in enumerate(self.values):
+                if len(v) > 0 and v[0].upper() == key:
+                    self.move_cursor(row = i)
+                    break
+        return super()._on_key(event)

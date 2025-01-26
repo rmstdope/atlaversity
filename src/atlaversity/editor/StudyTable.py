@@ -80,7 +80,7 @@ class StudyTable(DataTable):
 
     def on_data_table_cell_selected(self):
         mage = self.turns[self.cursor_column - 1].start_mages[self.cursor_row]
-        skills = mage.get_can_study_list()
+        skills = sorted(mage.get_can_study_list())
         skills.append('TEACH')
         self.editor.select_value('Select Skill', skills, self.update)
 
